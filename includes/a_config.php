@@ -1,4 +1,14 @@
 <?php
+$host = 'localhost';
+$user = 'root';
+$pass = 'localhost';
+$db = 'shareacardb';
+$link = mysqli_connect($host, $user, $pass, $db);
+
+if (!$link) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
 switch ($_SERVER["SCRIPT_NAME"]) {
     case "/about.php":
         $CURRENT_PAGE = "About";

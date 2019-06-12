@@ -1,4 +1,7 @@
-<?php include("includes/a_config.php"); ?>
+<?php
+include("includes/a_config.php");
+session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,9 +12,6 @@
 <div id="main">
 
     <?php include("includes/navigation.php"); ?>
-
-
-
 
 </div>
 
