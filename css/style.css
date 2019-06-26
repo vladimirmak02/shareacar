@@ -59,6 +59,10 @@ header a:hover {
     background-color: white;
 }
 
+.invalid_text {
+    color: #dc3545;
+}
+
 .navbar-brand:hover {
     background-color: transparent;
 }
