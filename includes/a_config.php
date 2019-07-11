@@ -22,6 +22,10 @@ switch ($_SERVER["SCRIPT_NAME"]) {
         $CURRENT_PAGE = "Signup";
         $PAGE_TITLE = "Sign up";
         break;
+    case "/profile.php":
+        $CURRENT_PAGE = "Profile";
+        $PAGE_TITLE = "Profile";
+        break;
     /*    case "/contact.php":
             $CURRENT_PAGE = "Contact";
             $PAGE_TITLE = "Contact Us";

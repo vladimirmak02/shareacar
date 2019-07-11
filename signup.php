@@ -12,7 +12,6 @@ $username = "";
 $password = "";
 $passwordRepeat = "";
 if (isset($_POST['submit'])) {
-    $firstname = $lastname = $email = $username = $password = $passwordRepeat = "";
 
     $firstname = cleanInput($_POST["newFirstname"]);
     $lastname = cleanInput($_POST["newLastname"]);
@@ -63,7 +62,7 @@ if (isset($_POST['submit'])) {
             $usernameError = 1;
             mysqli_stmt_close($stmt);
         } else if ($emailError == 0 AND $emailTakenError == 0) {
-
+            mysqli_stmt_close($stmt);
             $sql = "INSERT INTO users (first_name, last_name, email, username, password) VALUES (?, ?, ?, ?, ?)";
 
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
@@ -74,6 +73,16 @@ if (isset($_POST['submit'])) {
                 echo "somehting went wrong...";
             }
             if (mysqli_stmt_execute($stmt)) {
+                session_start();
+
+                // Store data in session variables
+                $_SESSION["loggedin"] = true;
+
+                $_SESSION["id"] = $userid;
+
+                $_SESSION["username"] = $username;
+
+                // Redirect user to welcome page
                 header("location: profile.php");
             } else {
                 echo "Something went wrong. Please try again later.";
@@ -148,16 +157,16 @@ if (isset($_POST['submit'])) {
             </div>
             <div class="form-group">
                 <label for="inputPassword">Password</label>
-                <input type="password" name="newPassword" minlength="8" placeholder="Password" class="form-control"
+                <input type="password" name="newPassword" minlength="6" placeholder="Password" class="form-control"
                        required>
                 <small id="passwordHelpInline" class="text-muted">
-                    Must be at least 8 characters long.
+                    Must be at least 6 characters long.
                 </small>
             </div>
             <div class="form-group">
                 <label for="inputPassword2">Re-Type Password</label>
 
-                <input type="password" name="newPassword2" minlength="8" placeholder="Re-Type Password"
+                <input type="password" name="newPassword2" minlength="6" placeholder="Re-Type Password"
                        class="form-control" required>
                 <small id="passwordHelpInline" class="text-muted">
                     Type the same password as the field above.

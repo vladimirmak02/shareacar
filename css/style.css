@@ -63,6 +63,10 @@ header a:hover {
     color: #dc3545;
 }
 
+.disappear {
+    display: none;
+}
+
 .navbar-brand:hover {
     background-color: transparent;
 }

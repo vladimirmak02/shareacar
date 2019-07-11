@@ -1,4 +1,9 @@
 <header>
+    <?php
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+    ?>
     <div style="background-image: linear-gradient(0deg, #00D8DB, #0050B3); height: 3em;padding-top: 3px; padding-left: 1em;">
 
         <ul class="nav nav-left">
@@ -16,12 +21,18 @@
         <ul class="nav nav-right">
             <li class="nav-item">
 
-                <a class=" nav-link <?php if ($CURRENT_PAGE == "Login") { ?>active<?php } ?>" href="/login.php">Log
-                    in</a>
+                <a class="nav-link <?php if ($CURRENT_PAGE == "Login") { ?>active<?php }
+                if ($_SESSION["loggedin"] === true) { ?> disappear <?php } ?>"
+                   href="/login.php">Log in</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php if ($CURRENT_PAGE == "Signup") { ?>active<?php } ?>" href="/signup.php">Sign
+                <a class="nav-link <?php if ($CURRENT_PAGE == "Signup") { ?>active<?php }
+                if ($_SESSION["loggedin"] === true) { ?> disappear <?php } ?>" href="/signup.php">Sign
                     Up</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?php if (!$_SESSION["loggedin"]) { ?> disappear <?php } ?>"
+                   href="/signout.php">Sign Out</a>
             </li>
 
             <!--<li class="nav-item">
