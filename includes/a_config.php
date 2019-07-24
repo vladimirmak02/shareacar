@@ -34,6 +34,9 @@ switch ($_SERVER["SCRIPT_NAME"]) {
         $CURRENT_PAGE = "Changepw";
         $PAGE_TITLE = "Change Password";
         break;
+    case "/newpw.php":
+        $CURRENT_PAGE = "Newpw";
+        $PAGE_TITLE = "Reset Password";
     /*    case "/contact.php":
             $CURRENT_PAGE = "Contact";
             $PAGE_TITLE = "Contact Us";
