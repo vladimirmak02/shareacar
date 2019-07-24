@@ -14,12 +14,13 @@ $username = "";
 $password = "";
 $loginError = 0;
 $userid = 0;
+$firstname = "";
 
 if (isset($_POST['submit'])) {
     $username = cleanInput($_POST["username"]);
     $password = cleanInput($_POST["password"]);
 
-    $sql = "SELECT id, password FROM users WHERE (email = ?) OR (username = ?)";
+    $sql = "SELECT id, password, first_name FROM users WHERE (email = ?) OR (username = ?)";
 
     if ($stmt = mysqli_prepare($link, $sql)) {
         mysqli_stmt_bind_param($stmt, "ss", $username, $username);
@@ -34,7 +35,7 @@ if (isset($_POST['submit'])) {
     }
     if (mysqli_stmt_num_rows($stmt) == 1) {
         $password_out = NULL;
-        if (mysqli_stmt_bind_result($stmt, $userid, $password_out)) {
+        if (mysqli_stmt_bind_result($stmt, $userid, $password_out, $firstname)) {
             if (mysqli_stmt_fetch($stmt)) {
                 if (password_verify($password, $password_out)) {
                     session_start();
@@ -46,8 +47,11 @@ if (isset($_POST['submit'])) {
 
                     $_SESSION["username"] = $username;
 
+                    $_SESSION["firstname"] = $firstname;
+
                     // Redirect user to welcome page
                     header("location: profile.php");
+                    exit;
                 } else {
                     $loginError = 1;
                 }
@@ -100,7 +104,7 @@ if (isset($_POST['submit'])) {
             <input type='hidden' name='submit'/>
             <button class="btn btn-primary" id="submitBtn" type="submit">Signup</button>
         </form>
-        <p><a href="/forgotpw.php">Forgot password?</a>.</p>
+        <p><a href="/forgotpw.php">Forgot password?</a></p>
     </div>
 
 

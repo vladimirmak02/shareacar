@@ -78,9 +78,9 @@ if (isset($_POST['submit'])) {
                 // Store data in session variables
                 $_SESSION["loggedin"] = true;
 
-                $_SESSION["id"] = $userid;
-
                 $_SESSION["username"] = $username;
+
+                $_SESSION["firstname"] = $firstname;
 
                 // Redirect user to welcome page
                 header("location: profile.php");

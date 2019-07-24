@@ -12,26 +12,36 @@
             <li class="nav-item ">
                 <a class="nav-link <?php if ($CURRENT_PAGE == "Index") { ?>active<?php } ?>" href="/index.php">Home</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link <?php if ($CURRENT_PAGE == "Profile") { ?>active<?php }
+                if (!isset($_SESSION["loggedin"]) OR !$_SESSION["loggedin"]) { ?> disappear <?php } ?>"
+                   href="/profile.php">Profile</a>
+            </li>
             <li class="nav-item ">
                 <a class="nav-link <?php if ($CURRENT_PAGE == "About") { ?>active<?php } ?>" href="/about.php">About
                     Us</a>
             </li>
+
             <!--position: absolute; right: 0px;-->
         </ul>
         <ul class="nav nav-right">
             <li class="nav-item">
 
                 <a class="nav-link <?php if ($CURRENT_PAGE == "Login") { ?>active<?php }
-                if ($_SESSION["loggedin"] === true) { ?> disappear <?php } ?>"
+                if (isset($_SESSION["loggedin"])) {
+                    if ($_SESSION["loggedin"] === true) { ?> disappear <?php }
+                } ?>"
                    href="/login.php">Log in</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php if ($CURRENT_PAGE == "Signup") { ?>active<?php }
-                if ($_SESSION["loggedin"] === true) { ?> disappear <?php } ?>" href="/signup.php">Sign
+                if (isset($_SESSION["loggedin"])) {
+                    if ($_SESSION["loggedin"] === true) { ?> disappear <?php }
+                } ?>" href="/signup.php">Sign
                     Up</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php if (!$_SESSION["loggedin"]) { ?> disappear <?php } ?>"
+                <a class="nav-link <?php if (!isset($_SESSION["loggedin"]) OR !$_SESSION["loggedin"]) { ?> disappear <?php } ?>"
                    href="/signout.php">Sign Out</a>
             </li>
 

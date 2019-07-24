@@ -4,7 +4,7 @@ session_start();
 require_once "includes/a_config.php";
 
 // Check if the user is logged in, if not then redirect him to login page
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
 }
@@ -14,10 +14,10 @@ $lastname = "";
 $email = "";
 $username = "";
 
-$sql = "SELECT first_name, last_name, username, email FROM users WHERE (id = ?)";
+$sql = "SELECT first_name, last_name, username, email FROM users WHERE (username = ?)";
 
 if ($stmt = mysqli_prepare($link, $sql)) {
-    mysqli_stmt_bind_param($stmt, "s", $_SESSION['id']);
+    mysqli_stmt_bind_param($stmt, "s", $_SESSION['username']);
 } else {
     echo "somehting went wrong1...";
 }
@@ -38,7 +38,7 @@ if (mysqli_stmt_num_rows($stmt) == 1) {
         echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
     }
 } else {
-    echo "ERROR BLYAT";
+    echo "nothing in database";
 }
 ?>
 
@@ -52,15 +52,33 @@ if (mysqli_stmt_num_rows($stmt) == 1) {
 <div id="main">
 
     <?php include("includes/navigation.php"); ?>
-
     <br>
-    <p>First name: <?php echo $firstname; ?></p>
-    <p>Last name: <?php echo $lastname; ?></p>
-    <p>Username: <?php echo $username; ?></p>
-    <p>Email: <?php echo $email; ?></p>
+    <div class="container" style="padding: 5%">
+        <table class="table table-borderless" style="width: 70%;">
 
-    <button class="btn">Change Password</button>
+            <tr>
+                <th scope="row">First name</th>
+                <td><?php echo $firstname; ?></td>
+            </tr>
+            <tr>
+                <th scope="row">Last name</th>
+                <td><?php echo $lastname; ?></td>
+            </tr>
+            <tr>
+                <th scope="row">Username</th>
+                <td><?php echo $username; ?></td>
+            </tr>
+            <tr>
+                <th scope="row">Email</th>
+                <td><?php echo $email; ?></td>
+            </tr>
+            <tr>
+                <th scope="row">Password</th>
+                <td><a href="changepw.php">Change Password</a></td>
+            </tr>
+        </table>
 
+    </div>
 </div>
 
 <?php include("includes/footer.php"); ?>

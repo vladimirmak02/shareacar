@@ -19,15 +19,15 @@
             </div>
             <div class="form-group">
                 <label for="inputPassword">New Password</label>
-                <input type="password" id="inputPassword" minlength="8" placeholder="New Password" class="form-control"
+                <input type="password" id="inputPassword" minlength="6" placeholder="New Password" class="form-control"
                        required>
                 <small id="passwordHelpInline" class="text-muted">
-                    Must be at least 8 characters long.
+                    Must be at least 6 characters long.
                 </small>
             </div>
             <div class="form-group">
                 <label for="inputPassword2">Re-Type New Password</label>
-                <input type="password" id="inputPassword2" minlength="8" placeholder="Re-Type New Password"
+                <input type="password" id="inputPassword2" minlength="6" placeholder="Re-Type New Password"
                        class="form-control" required>
                 <small id="passwordHelpInline" class="text-muted">
                     Type the same password as the field above.

@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
 $user = 'root';
-$pass = 'localhost';
-$db = 'shareacardb';
+$pass = '';
+$db = 'shareacar';
 $link = mysqli_connect($host, $user, $pass, $db);
 
 if (!$link) {
