@@ -11,6 +11,7 @@ $email = "";
 $username = "";
 $password = "";
 $passwordRepeat = "";
+$userid = "";
 if (isset($_POST['submit'])) {
 
     $firstname = cleanInput($_POST["newFirstname"]);
@@ -73,17 +74,47 @@ if (isset($_POST['submit'])) {
                 echo "somehting went wrong...";
             }
             if (mysqli_stmt_execute($stmt)) {
-                session_start();
 
-                // Store data in session variables
-                $_SESSION["loggedin"] = true;
+                $sql = "SELECT id FROM users WHERE username = ?";
 
-                $_SESSION["username"] = $username;
+                if ($stmt = mysqli_prepare($link, $sql)) {
+                    mysqli_stmt_bind_param($stmt, "s", $username);
+                } else {
+                    echo "somehting went wrong1...";
+                }
+                if (mysqli_stmt_execute($stmt)) {
+                    mysqli_stmt_store_result($stmt);
 
-                $_SESSION["firstname"] = $firstname;
+                } else {
+                    echo "Something went wrong. Please try again later.";
+                }
+                if (mysqli_stmt_num_rows($stmt) == 1) {
+                    if (mysqli_stmt_bind_result($stmt, $userid)) {
+                        if (mysqli_stmt_fetch($stmt)) {
+                            session_start();
 
-                // Redirect user to welcome page
-                header("location: profile.php");
+                            // Store data in session variables
+                            $_SESSION["loggedin"] = true;
+
+                            $_SESSION["uid"] = $userid;
+
+                            $_SESSION["username"] = $username;
+
+                            $_SESSION["firstname"] = $firstname;
+
+                            // Redirect user to welcome page
+                            header("location: profile.php");
+                        } else {
+                            echo "Fetch Failed";
+                        }
+                    } else {
+                        echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                    }
+                } else {
+                    echo "Error";
+                }
+
+
             } else {
                 echo "Something went wrong. Please try again later.";
             }
@@ -134,7 +165,8 @@ if (isset($_POST['submit'])) {
                     ?>
                 </p>
                 <label for="inputFirstname">First name</label>
-                <input type="text" class="form-control" value="<?php echo $firstname ?>" name="newFirstname"
+                <input type="text" class="form-control" value="<?php echo $firstname ?>" id="inputFirstname"
+                       name="newFirstname"
                        placeholder="Enter your first name"
                        required>
             </div>
@@ -184,6 +216,6 @@ if (isset($_POST['submit'])) {
 
 <?php include("includes/footer.php"); ?>
 
-
+<script>$('#inputFirstname').select();</script>
 </body>
 </html>

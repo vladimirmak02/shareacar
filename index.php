@@ -19,7 +19,13 @@ YOUTUBE TUTORIAL ON SIGNUP & LOGIN
 <div id="main">
 
     <?php include("includes/navigation.php"); ?>
-    <p>Welcome, <?php echo $_SESSION['firstname']; ?></p>
+    <div class="container">
+
+        <p>Welcome<?php if (isset($_SESSION['firstname'])) {
+                echo " " . $_SESSION['firstname'];
+            } ?>!</p>
+
+    </div>
 </div>
 
 <?php include("includes/footer.php"); ?>

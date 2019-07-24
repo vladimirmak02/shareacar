@@ -26,6 +26,14 @@ switch ($_SERVER["SCRIPT_NAME"]) {
         $CURRENT_PAGE = "Profile";
         $PAGE_TITLE = "Profile";
         break;
+    case "/forgotpw.php":
+        $CURRENT_PAGE = "Forgotpw";
+        $PAGE_TITLE = "Forgot Password";
+        break;
+    case "/changepw.php":
+        $CURRENT_PAGE = "Changepw";
+        $PAGE_TITLE = "Change Password";
+        break;
     /*    case "/contact.php":
             $CURRENT_PAGE = "Contact";
             $PAGE_TITLE = "Contact Us";

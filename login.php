@@ -20,7 +20,7 @@ if (isset($_POST['submit'])) {
     $username = cleanInput($_POST["username"]);
     $password = cleanInput($_POST["password"]);
 
-    $sql = "SELECT id, password, first_name FROM users WHERE (email = ?) OR (username = ?)";
+    $sql = "SELECT id, password, first_name, username FROM users WHERE (email = ?) OR (username = ?)";
 
     if ($stmt = mysqli_prepare($link, $sql)) {
         mysqli_stmt_bind_param($stmt, "ss", $username, $username);
@@ -35,7 +35,7 @@ if (isset($_POST['submit'])) {
     }
     if (mysqli_stmt_num_rows($stmt) == 1) {
         $password_out = NULL;
-        if (mysqli_stmt_bind_result($stmt, $userid, $password_out, $firstname)) {
+        if (mysqli_stmt_bind_result($stmt, $userid, $password_out, $firstname, $username)) {
             if (mysqli_stmt_fetch($stmt)) {
                 if (password_verify($password, $password_out)) {
                     session_start();
@@ -82,9 +82,15 @@ if (isset($_POST['submit'])) {
     <div class="container" style="padding: 5%">
         <form class="loginform" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
               style="width: 50%;">
+            <?php if (isset($_GET['newpwd']) AND $_GET['newpwd'] === "updated") { ?>
+                <div class="alert alert-success" role="alert">
+                    <p>You successfully reset your password, now go ahead and log in!</p>
+                </div>
+            <?php } ?>
             <p class="invalid_text"><?php if ($loginError == 1) {
                     echo "The login details do not match. Please try again";
                 } ?> </p>
+
             <div class="form-group">
                 <label for="inputUsername">Username or Email</label>
                 <input type="text" name="username" class="form-control" id="inputUsername" minlength="4"
@@ -96,9 +102,6 @@ if (isset($_POST['submit'])) {
                 <input type="password" id="inputPassword" name="password" minlength="6" placeholder="Password"
                        class="form-control"
                        required>
-                <!--                <small id="passwordHelpInline" class="text-muted">-->
-                <!--                    -->
-                <!--                </small>-->
             </div>
 
             <input type='hidden' name='submit'/>
@@ -112,5 +115,6 @@ if (isset($_POST['submit'])) {
 
 <?php include("includes/footer.php"); ?>
 
+<script>$('#inputUsername').select();</script>
 </body>
 </html>
