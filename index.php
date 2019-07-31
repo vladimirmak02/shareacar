@@ -24,7 +24,7 @@ YOUTUBE TUTORIAL ON SIGNUP & LOGIN
         <p>Welcome<?php if (isset($_SESSION['firstname'])) {
                 echo " " . $_SESSION['firstname'];
             } ?>!</p>
-
+        <?php print_r($_SESSION); ?>
     </div>
 </div>
 

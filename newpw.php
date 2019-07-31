@@ -117,7 +117,7 @@ if (isset($_POST['submit'])) {
 <div id="main">
 
     <?php include("includes/navigation.php"); ?>
-    <div class="container" style="padding: 5%">
+    <div class="container" style="padding: 5px">
         <?php if (empty($selector) OR empty($validator)) {
             echo "We could not validate your request";
             echo '<br> <a href="index.php">Go back home</a>';
@@ -132,7 +132,7 @@ if (isset($_POST['submit'])) {
                 <p class="invalid_text"><?php if ($passwordError == 1) {
                         echo "The passwords do not match. Please try again";
                     } ?> </p>
-                <form class="loginform "
+                <form class="loginform"
                       action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . "?selector=" . $selector . "&validator=" . $validator; ?>"
                       method="post"
                       style="width: 50%;">

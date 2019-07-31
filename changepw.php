@@ -85,7 +85,7 @@ if (isset($_POST['submit'])) {
 <div id="main">
 
     <?php include("includes/navigation.php"); ?>
-    <div class="container" style="padding: 5%">
+    <div class="container" style="padding: 5px">
         <form class="loginform" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
               style="width: 50%;">
             <p class="invalid_text"><?php if ($loginError == 1) {

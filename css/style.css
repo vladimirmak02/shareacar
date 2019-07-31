@@ -85,6 +85,10 @@ header a:hover {
     background-color: white;
 }
 
+.hoverHand {
+    cursor: pointer;
+}
+
 #main {
     min-height: 100%;
     overflow: auto;

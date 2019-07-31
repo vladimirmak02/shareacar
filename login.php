@@ -43,7 +43,7 @@ if (isset($_POST['submit'])) {
                     // Store data in session variables
                     $_SESSION["loggedin"] = true;
 
-                    $_SESSION["id"] = $userid;
+                    $_SESSION["uid"] = $userid;
 
                     $_SESSION["username"] = $username;
 
@@ -79,7 +79,7 @@ if (isset($_POST['submit'])) {
 
     <?php include("includes/navigation.php"); ?>
 
-    <div class="container" style="padding: 5%">
+    <div class="container" style="padding: 5px">
         <form class="loginform" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
               style="width: 50%;">
             <?php if (isset($_GET['newpwd']) AND $_GET['newpwd'] === "updated") { ?>
@@ -105,7 +105,7 @@ if (isset($_POST['submit'])) {
             </div>
 
             <input type='hidden' name='submit'/>
-            <button class="btn btn-primary" id="submitBtn" type="submit">Signup</button>
+            <button class="btn btn-primary" id="submitBtn" type="submit">Login</button>
         </form>
         <p><a href="/forgotpw.php">Forgot password?</a></p>
     </div>

@@ -9,6 +9,22 @@ if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
     exit;
 }
 
+if (isset($_POST['deleteCar'])) {
+    $sql = "DELETE FROM cars WHERE (imagepath = ?)";
+
+    if ($stmt = mysqli_prepare($link, $sql)) {
+        mysqli_stmt_bind_param($stmt, "s", $_POST["deleteCar"]);
+    } else {
+        echo "somehting went wrong1...";
+    }
+    if (mysqli_stmt_execute($stmt)) {
+        unlink($_POST["deleteCar"]) or die("Couldn't delete file");
+
+    } else {
+        echo "Something went wrong. Please try again later.";
+    }
+}
+
 $firstname = "";
 $lastname = "";
 $email = "";
@@ -40,6 +56,42 @@ if (mysqli_stmt_num_rows($stmt) == 1) {
 } else {
     echo "nothing in database";
 }
+
+
+$hasCar = 1;
+$nOfCars = 0;
+$sql = "SELECT carid, model, year, make, color, type, passengers, imagepath FROM cars WHERE (driverid = ?)";
+if ($stmt = mysqli_prepare($link, $sql)) {
+    mysqli_stmt_bind_param($stmt, "s", $_SESSION['uid']);
+} else {
+    echo "somehting went wrong1...";
+}
+if (mysqli_stmt_execute($stmt)) {
+    mysqli_stmt_store_result($stmt);
+
+} else {
+    echo "Something went wrong. Please try again later.";
+}
+if (mysqli_stmt_num_rows($stmt) > 0) {
+    $carId = "";
+    $carMake = "";
+    $carYear = "";
+    $carModel = "";
+    $carColor = "";
+    $carType = "";
+    $passengerNumber = "";
+    $carImagePath = "";
+    if (mysqli_stmt_bind_result($stmt, $carId, $carModel, $carYear, $carMake, $carColor, $carType, $passengerNumber, $carImagePath)) {
+        //fetch later
+        $nOfCars = mysqli_stmt_num_rows($stmt);
+    } else {
+        echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+    }
+} else {
+    $hasCar = 0;
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -53,11 +105,10 @@ if (mysqli_stmt_num_rows($stmt) == 1) {
 
     <?php include("includes/navigation.php"); ?>
     <br>
-    <div class="container" style="padding: 5%">
-        <table class="table table-borderless" style="width: 70%;">
-
+    <div class="container" style="padding: 5px">
+        <table class="table table-borderless" style="width: 50%;">
             <tr>
-                <th scope="row">First name</th>
+                <th scope="row" width="60%">First name</th>
                 <td><?php echo $firstname; ?></td>
             </tr>
             <tr>
@@ -77,7 +128,58 @@ if (mysqli_stmt_num_rows($stmt) == 1) {
                 <td><a href="changepw.php">Change Password</a></td>
             </tr>
         </table>
-
+        <?php if ($hasCar === 0) { ?>
+            <span>You haven't added a car yet!   </span>
+            <a href="createcar.php">Create your car</a>
+        <?php } elseif ($hasCar > 0) {
+            for ($i = 1; $i <= $nOfCars; $i++) {
+                if (mysqli_stmt_fetch($stmt)) { ?>
+                    <div class="card card-body">
+                        <h5 class="card-title alert alert-primary">Car: <?php echo $carMake . " " . $carModel; ?></h5>
+                        <table class="table table-borderless" style="width: 50%;">
+                            <img style="width: 70%;" src="<?php echo $carImagePath ?>">
+                            <tr>
+                                <th scope="row" width="60%">Number Plate (ID)</th>
+                                <td><?php echo $carId; ?></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Make</th>
+                                <td><?php echo $carMake; ?></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Year</th>
+                                <td><?php echo $carYear; ?></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Model</th>
+                                <td><?php echo $carModel; ?></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Color</th>
+                                <td><?php echo $carColor; ?></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Type</th>
+                                <td><?php echo $carType; ?></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Number of Passengers</th>
+                                <td><?php echo $passengerNumber; ?></td>
+                            </tr>
+                        </table>
+                        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                            <input type='hidden' name='deleteCar' value="<?php echo $carImagePath; ?>"/>
+                            <button class="btn btn-danger" id="deleteBtn<?php echo $i; ?>" type="submit">Delete
+                                your <?php echo $carMake . " " . $carModel; ?></button>
+                        </form>
+                    </div>
+                    <br>
+                <?php } else {
+                    echo "Fetch Failed";
+                }
+            }
+            ?> <a href="createcar.php">Add another car</a> <?php
+        } ?>
     </div>
 </div>
 
@@ -85,4 +187,3 @@ if (mysqli_stmt_num_rows($stmt) == 1) {
 
 </body>
 </html>
-
