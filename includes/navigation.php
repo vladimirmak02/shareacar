@@ -1,5 +1,5 @@
 <header>
-    <?php
+    <?
     if (!isset($_SESSION)) {
         session_start();
     }
@@ -10,15 +10,20 @@
             <a class="navbar-brand" href="/index.php"><img src="/res/logosmall.png"
                                                            style="height: 2em; margin-top: -0.2em;"></a>
             <li class="nav-item ">
-                <a class="nav-link <?php if ($CURRENT_PAGE == "Index") { ?>active<?php } ?>" href="/index.php">Home</a>
+                <a class="nav-link <? if ($CURRENT_PAGE == "Index") { ?>active<? } ?>" href="/index.php">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php if ($CURRENT_PAGE == "Profile") { ?>active<?php }
-                if (!isset($_SESSION["loggedin"]) OR !$_SESSION["loggedin"]) { ?> disappear <?php } ?>"
+                <a class="nav-link <? if ($CURRENT_PAGE == "Trips") { ?>active<? }
+                if (!isset($_SESSION["loggedin"]) OR !$_SESSION["loggedin"]) { ?> disappear <? } ?>"
+                   href="/trips.php">My trips</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <? if ($CURRENT_PAGE == "Profile") { ?>active<? }
+                if (!isset($_SESSION["loggedin"]) OR !$_SESSION["loggedin"]) { ?> disappear <? } ?>"
                    href="/profile.php">Profile</a>
             </li>
             <li class="nav-item ">
-                <a class="nav-link <?php if ($CURRENT_PAGE == "About") { ?>active<?php } ?>" href="/about.php">About
+                <a class="nav-link <? if ($CURRENT_PAGE == "About") { ?>active<? } ?>" href="/about.php">About
                     Us</a>
             </li>
 
@@ -27,26 +32,26 @@
         <ul class="nav nav-right">
             <li class="nav-item">
 
-                <a class="nav-link <?php if ($CURRENT_PAGE == "Login") { ?>active<?php }
+                <a class="nav-link <? if ($CURRENT_PAGE == "Login") { ?>active<? }
                 if (isset($_SESSION["loggedin"])) {
-                    if ($_SESSION["loggedin"] === true) { ?> disappear <?php }
+                    if ($_SESSION["loggedin"] === true) { ?> disappear <? }
                 } ?>"
                    href="/login.php">Log in</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php if ($CURRENT_PAGE == "Signup") { ?>active<?php }
+                <a class="nav-link <? if ($CURRENT_PAGE == "Signup") { ?>active<? }
                 if (isset($_SESSION["loggedin"])) {
-                    if ($_SESSION["loggedin"] === true) { ?> disappear <?php }
+                    if ($_SESSION["loggedin"] === true) { ?> disappear <? }
                 } ?>" href="/signup.php">Sign
                     Up</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php if (!isset($_SESSION["loggedin"]) OR !$_SESSION["loggedin"]) { ?> disappear <?php } ?>"
+                <a class="nav-link <? if (!isset($_SESSION["loggedin"]) OR !$_SESSION["loggedin"]) { ?> disappear <? } ?>"
                    href="/signout.php">Sign Out</a>
             </li>
 
             <!--<li class="nav-item">
-            <a class="nav-link <?php /*if ($CURRENT_PAGE == "Contact") {*/ ?>active<?php /*}*/ ?>" href="contact.php">Contact</a>
+            <a class="nav-link <? /*if ($CURRENT_PAGE == "Contact") {*/ ?>active<? /*}*/ ?>" href="contact.php">Contact</a>
         </li>-->
         </ul>
     </div>

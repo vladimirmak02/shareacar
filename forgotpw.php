@@ -1,4 +1,4 @@
-<?php
+<?
 
 session_start();
 
@@ -93,24 +93,24 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include("includes/head-tag-contents.php"); ?>
+    <? include("includes/head-tag-contents.php"); ?>
 </head>
 <body>
 
 <div id="main">
 
-    <?php include("includes/navigation.php"); ?>
+    <? include("includes/navigation.php"); ?>
     <div class="container" style="padding: 5px">
-        <form class="loginform <?php if ($sendSuccessful) { ?> disappear <?php } ?> "
-              action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
+        <form class="loginform <? if ($sendSuccessful) { ?> disappear <? } ?> "
+              action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
               style="width: 50%;">
-            <p class="invalid_text"><?php if ($emailError == 1) {
+            <p class="invalid_text"><? if ($emailError == 1) {
                     echo 'This email does not exist, please try again, or <a href="signup.php">Sign Up</a>';
                 } ?> </p>
             <div class="form-group">
                 <label for="inputUsername">Email</label>
                 <input type="email" name="email" class="form-control" id="inputEmail" placeholder="Enter your Email"
-                       required <?php if ($emailError == 1) { ?> value="<?php echo $email; ?>" <?php } ?>>
+                       required <? if ($emailError == 1) { ?> value="<? echo $email; ?>" <? } ?>>
                 <br>
                 <p>An Email will be sent to you with instructions on how to reset your password.</p>
 
@@ -119,7 +119,7 @@ if (isset($_POST['submit'])) {
             </div>
         </form>
 
-        <div class="alert alert-success <?php if (!$sendSuccessful) { ?> disappear <?php } ?>" role="alert">
+        <div class="alert alert-success <? if (!$sendSuccessful) { ?> disappear <? } ?>" role="alert">
             <h4 class="alert-heading">Email Sent!</h4>
             <p>An email containing instructions on how to reset your password has been sent to the email you provided,
                 please check your email!</p>
@@ -128,7 +128,7 @@ if (isset($_POST['submit'])) {
 
 </div>
 
-<?php include("includes/footer.php"); ?>
+<? include("includes/footer.php"); ?>
 
 <script>$('#inputEmail').select();</script>
 

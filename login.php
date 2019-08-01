@@ -1,4 +1,4 @@
-<?php
+<?
 
 session_start();
 
@@ -71,23 +71,23 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include("includes/head-tag-contents.php"); ?>
+    <? include("includes/head-tag-contents.php"); ?>
 </head>
 <body>
 
 <div id="main">
 
-    <?php include("includes/navigation.php"); ?>
+    <? include("includes/navigation.php"); ?>
 
     <div class="container" style="padding: 5px">
-        <form class="loginform" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
+        <form class="loginform" action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
               style="width: 50%;">
-            <?php if (isset($_GET['newpwd']) AND $_GET['newpwd'] === "updated") { ?>
+            <? if (isset($_GET['newpwd']) AND $_GET['newpwd'] === "updated") { ?>
                 <div class="alert alert-success" role="alert">
                     <p>You successfully reset your password, now go ahead and log in!</p>
                 </div>
-            <?php } ?>
-            <p class="invalid_text"><?php if ($loginError == 1) {
+            <? } ?>
+            <p class="invalid_text"><? if ($loginError == 1) {
                     echo "The login details do not match. Please try again";
                 } ?> </p>
 
@@ -113,7 +113,7 @@ if (isset($_POST['submit'])) {
 
 </div>
 
-<?php include("includes/footer.php"); ?>
+<? include("includes/footer.php"); ?>
 
 <script>$('#inputUsername').select();</script>
 </body>

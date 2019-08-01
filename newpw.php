@@ -1,4 +1,4 @@
-<?php
+<?
 
 session_start();
 
@@ -110,15 +110,15 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include("includes/head-tag-contents.php"); ?>
+    <? include("includes/head-tag-contents.php"); ?>
 </head>
 <body>
 
 <div id="main">
 
-    <?php include("includes/navigation.php"); ?>
+    <? include("includes/navigation.php"); ?>
     <div class="container" style="padding: 5px">
-        <?php if (empty($selector) OR empty($validator)) {
+        <? if (empty($selector) OR empty($validator)) {
             echo "We could not validate your request";
             echo '<br> <a href="index.php">Go back home</a>';
         } elseif ($requestExpired == 1) {
@@ -129,11 +129,11 @@ if (isset($_POST['submit'])) {
             if (ctype_xdigit($selector) AND ctype_xdigit($validator)) {
 
                 ?>
-                <p class="invalid_text"><?php if ($passwordError == 1) {
+                <p class="invalid_text"><? if ($passwordError == 1) {
                         echo "The passwords do not match. Please try again";
                     } ?> </p>
                 <form class="loginform"
-                      action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . "?selector=" . $selector . "&validator=" . $validator; ?>"
+                      action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]) . "?selector=" . $selector . "&validator=" . $validator; ?>"
                       method="post"
                       style="width: 50%;">
                     <div class="form-group">
@@ -158,13 +158,13 @@ if (isset($_POST['submit'])) {
                     <input type='hidden' name='submit'/>
                     <button class="btn btn-primary" id="submitBtn" type="submit">Reset my password</button>
                 </form>
-            <?php }
+            <? }
         } ?>
     </div>
 
 </div>
 
-<?php include("includes/footer.php"); ?>
+<? include("includes/footer.php"); ?>
 
 <script>$('#inputPassword').select();</script>
 

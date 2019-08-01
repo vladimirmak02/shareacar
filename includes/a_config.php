@@ -1,4 +1,4 @@
-<?php
+<?
 $host = 'localhost';
 $user = 'root';
 $pass = '';
@@ -41,6 +41,10 @@ switch ($_SERVER["SCRIPT_NAME"]) {
     case "/createcar.php":
         $CURRENT_PAGE = "Newcar";
         $PAGE_TITLE = "Add a New Car";
+        break;
+    case "/trips.php":
+        $CURRENT_PAGE = "Trips";
+        $PAGE_TITLE = "My Trips";
         break;
     /*    case "/contact.php":
             $CURRENT_PAGE = "Contact";

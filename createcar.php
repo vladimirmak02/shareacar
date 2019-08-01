@@ -1,4 +1,4 @@
-<?php
+<?
 session_start();
 
 require_once "includes/a_config.php";
@@ -81,19 +81,19 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include("includes/head-tag-contents.php"); ?>
+    <? include("includes/head-tag-contents.php"); ?>
 </head>
 <body>
 <div id="main">
 
-    <?php include("includes/navigation.php"); ?>
+    <? include("includes/navigation.php"); ?>
 
     <br>
 
     <div class="container" style="padding: 5px">
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
+        <form action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
               style="width: 60%;" enctype="multipart/form-data">
-            <p class="invalid_text"> <?php
+            <p class="invalid_text"> <?
                 if ($carIdError == 1) {
                     echo "A car with such a plate number already exists, please try again!";
                 }
@@ -155,7 +155,7 @@ if (isset($_POST['submit'])) {
 
 </div>
 
-<?php include("includes/footer.php"); ?>
+<? include("includes/footer.php"); ?>
 
 <script> $("form #type").change(function () {
         if ($("form #type").val() != "") {

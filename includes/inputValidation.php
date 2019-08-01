@@ -1,4 +1,4 @@
-<?php
+<?
 function cleanInput($a)
 {
     return filter_var(htmlspecialchars(trim($a)), FILTER_SANITIZE_STRING);

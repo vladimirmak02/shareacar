@@ -1,4 +1,4 @@
-<?php
+<?
 
 session_start();
 
@@ -78,17 +78,17 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include("includes/head-tag-contents.php"); ?>
+    <? include("includes/head-tag-contents.php"); ?>
 </head>
 <body>
 
 <div id="main">
 
-    <?php include("includes/navigation.php"); ?>
+    <? include("includes/navigation.php"); ?>
     <div class="container" style="padding: 5px">
-        <form class="loginform" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
+        <form class="loginform" action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
               style="width: 50%;">
-            <p class="invalid_text"><?php if ($loginError == 1) {
+            <p class="invalid_text"><? if ($loginError == 1) {
                     echo "The password you entered isn't correct. Please try again, or <a href='/forgotpw.php'>click here if you forgot password?</a>";
                 } ?> </p>
             <div class="form-group">
@@ -122,7 +122,7 @@ if (isset($_POST['submit'])) {
 
 </div>
 
-<?php include("includes/footer.php"); ?>
+<? include("includes/footer.php"); ?>
 
 
 </body>

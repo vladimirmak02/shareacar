@@ -1,4 +1,4 @@
-<?php
+<?
 session_start();
 
 require_once "includes/a_config.php";
@@ -97,93 +97,93 @@ if (mysqli_stmt_num_rows($stmt) > 0) {
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include("includes/head-tag-contents.php"); ?>
+    <? include("includes/head-tag-contents.php"); ?>
 </head>
 <body>
 
 <div id="main">
 
-    <?php include("includes/navigation.php"); ?>
+    <? include("includes/navigation.php"); ?>
     <br>
     <div class="container" style="padding: 5px">
         <table class="table table-borderless" style="width: 50%;">
             <tr>
                 <th scope="row" width="60%">First name</th>
-                <td><?php echo $firstname; ?></td>
+                <td><? echo $firstname; ?></td>
             </tr>
             <tr>
                 <th scope="row">Last name</th>
-                <td><?php echo $lastname; ?></td>
+                <td><? echo $lastname; ?></td>
             </tr>
             <tr>
                 <th scope="row">Username</th>
-                <td><?php echo $username; ?></td>
+                <td><? echo $username; ?></td>
             </tr>
             <tr>
                 <th scope="row">Email</th>
-                <td><?php echo $email; ?></td>
+                <td><? echo $email; ?></td>
             </tr>
             <tr>
                 <th scope="row">Password</th>
                 <td><a href="changepw.php">Change Password</a></td>
             </tr>
         </table>
-        <?php if ($hasCar === 0) { ?>
+        <? if ($hasCar === 0) { ?>
             <span>You haven't added a car yet!   </span>
             <a href="createcar.php">Create your car</a>
-        <?php } elseif ($hasCar > 0) {
+        <? } elseif ($hasCar > 0) {
             for ($i = 1; $i <= $nOfCars; $i++) {
                 if (mysqli_stmt_fetch($stmt)) { ?>
                     <div class="card card-body">
-                        <h5 class="card-title alert alert-primary">Car: <?php echo $carMake . " " . $carModel; ?></h5>
+                        <h5 class="card-title alert alert-primary">Car: <? echo $carMake . " " . $carModel; ?></h5>
                         <table class="table table-borderless" style="width: 50%;">
-                            <img style="width: 70%;" src="<?php echo $carImagePath ?>">
+                            <img style="width: 70%;" src="<? echo $carImagePath ?>">
                             <tr>
                                 <th scope="row" width="60%">Number Plate (ID)</th>
-                                <td><?php echo $carId; ?></td>
+                                <td><? echo $carId; ?></td>
                             </tr>
                             <tr>
                                 <th scope="row">Make</th>
-                                <td><?php echo $carMake; ?></td>
+                                <td><? echo $carMake; ?></td>
                             </tr>
                             <tr>
                                 <th scope="row">Year</th>
-                                <td><?php echo $carYear; ?></td>
+                                <td><? echo $carYear; ?></td>
                             </tr>
                             <tr>
                                 <th scope="row">Model</th>
-                                <td><?php echo $carModel; ?></td>
+                                <td><? echo $carModel; ?></td>
                             </tr>
                             <tr>
                                 <th scope="row">Color</th>
-                                <td><?php echo $carColor; ?></td>
+                                <td><? echo $carColor; ?></td>
                             </tr>
                             <tr>
                                 <th scope="row">Type</th>
-                                <td><?php echo $carType; ?></td>
+                                <td><? echo $carType; ?></td>
                             </tr>
                             <tr>
                                 <th scope="row">Number of Passengers</th>
-                                <td><?php echo $passengerNumber; ?></td>
+                                <td><? echo $passengerNumber; ?></td>
                             </tr>
                         </table>
-                        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                            <input type='hidden' name='deleteCar' value="<?php echo $carImagePath; ?>"/>
-                            <button class="btn btn-danger" id="deleteBtn<?php echo $i; ?>" type="submit">Delete
-                                your <?php echo $carMake . " " . $carModel; ?></button>
+                        <form action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                            <input type='hidden' name='deleteCar' value="<? echo $carImagePath; ?>"/>
+                            <button class="btn btn-danger" id="deleteBtn<? echo $i; ?>" type="submit">Delete
+                                your <? echo $carMake . " " . $carModel; ?></button>
                         </form>
                     </div>
                     <br>
-                <?php } else {
+                <? } else {
                     echo "Fetch Failed";
                 }
             }
-            ?> <a href="createcar.php">Add another car</a> <?php
+            ?> <a href="createcar.php">Add another car</a> <?
         } ?>
     </div>
 </div>
 
-<?php include("includes/footer.php"); ?>
+<? include("includes/footer.php"); ?>
 
 </body>
 </html>

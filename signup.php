@@ -1,4 +1,4 @@
-<?php
+<?
 require_once "includes/a_config.php";
 require_once "includes/inputValidation.php";
 $passwordError = 0;
@@ -132,59 +132,59 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include("includes/head-tag-contents.php"); ?>
+    <? include("includes/head-tag-contents.php"); ?>
 </head>
 <body>
 
 <div id="main">
 
-    <?php include("includes/navigation.php"); ?>
+    <? include("includes/navigation.php"); ?>
     <div class="container" style="padding: 5px">
-        <form class="loginform" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
+        <form class="loginform" action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
               style="width: 50%;">
             <div class="form-group">
-                <p class="invalid_text"><?php if ($passwordError == 1) {
+                <p class="invalid_text"><? if ($passwordError == 1) {
                         echo "The passwords do not match. Please try again";
                     } ?> </p>
-                <p class="invalid_text"> <?php
+                <p class="invalid_text"> <?
                     if ($usernameError == 1) {
                         echo "This username is taken. Please try a different one.";
                     }
                     ?>
                 </p>
-                <p class="invalid_text"> <?php
+                <p class="invalid_text"> <?
                     if ($emailTakenError == 1) {
                         echo "This email is taken. Please try a different one.";
                     }
                     ?>
                 </p>
-                <p class="invalid_text"> <?php
+                <p class="invalid_text"> <?
                     if ($emailError == 1) {
                         echo "This email is invalid. Please enter a valid email.";
                     }
                     ?>
                 </p>
                 <label for="inputFirstname">First name</label>
-                <input type="text" class="form-control" value="<?php echo $firstname ?>" id="inputFirstname"
+                <input type="text" class="form-control" value="<? echo $firstname ?>" id="inputFirstname"
                        name="newFirstname"
                        placeholder="Enter your first name"
                        required>
             </div>
             <div class="form-group">
                 <label for="inputLastname">Last name</label>
-                <input type="text" class="form-control" value="<?php echo $lastname; ?>" name="newLastname"
+                <input type="text" class="form-control" value="<? echo $lastname; ?>" name="newLastname"
                        placeholder="Enter your last name"
                        required>
             </div>
             <div class="form-group">
                 <label for="inputEmail">Email address</label>
-                <input type="email" class="form-control" value="<?php echo $email; ?>" name="newEmail"
+                <input type="email" class="form-control" value="<? echo $email; ?>" name="newEmail"
                        placeholder="Enter email" required>
             </div>
             <div class="form-group">
                 <label for="inputUsername">Username</label>
                 <input type="text" class="form-control" name="newUsername" minlength="4"
-                       value="<?php echo $username; ?>" placeholder="Enter Username"
+                       value="<? echo $username; ?>" placeholder="Enter Username"
                        required>
             </div>
             <div class="form-group">
@@ -214,7 +214,7 @@ if (isset($_POST['submit'])) {
 
 </div>
 
-<?php include("includes/footer.php"); ?>
+<? include("includes/footer.php"); ?>
 
 <script>$('#inputFirstname').select();</script>
 </body>

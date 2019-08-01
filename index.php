@@ -1,4 +1,4 @@
-<?php
+<?
 include("includes/a_config.php");
 session_start();
 ?>
@@ -12,23 +12,23 @@ YOUTUBE TUTORIAL ON SIGNUP & LOGIN
 -->
 <html>
 <head>
-    <?php include("includes/head-tag-contents.php"); ?>
+    <? include("includes/head-tag-contents.php"); ?>
 </head>
 <body>
 
 <div id="main">
 
-    <?php include("includes/navigation.php"); ?>
+    <? include("includes/navigation.php"); ?>
     <div class="container">
 
-        <p>Welcome<?php if (isset($_SESSION['firstname'])) {
+        <p>Welcome<? if (isset($_SESSION['firstname'])) {
                 echo " " . $_SESSION['firstname'];
             } ?>!</p>
-        <?php print_r($_SESSION); ?>
+        <? print_r($_SESSION); ?>
     </div>
 </div>
 
-<?php include("includes/footer.php"); ?>
+<? include("includes/footer.php"); ?>
 
 </body>
 </html>
