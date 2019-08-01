@@ -79,7 +79,7 @@ if ($showOwnTrips === 1) {
     <? include("includes/navigation.php"); ?>
     <br>
     <div class="container" style="padding: 5px">
-        <div class="row">
+        <div class="row mb-4">
             <div class="col-8">
                 <form action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" class="form-inline">
                     <div class="form-group">
@@ -129,9 +129,9 @@ if ($showOwnTrips === 1) {
             <? } elseif ($nOfCars >= 1) {
                 for ($i = 1; $i <= $nOfCars; $i++) {
                     if (mysqli_stmt_fetch($stmt)) {
-                        $sql = "SELECT starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday FROM trips WHERE (carid = ?)";
+                        $sql = "SELECT tripid, starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday FROM trips WHERE (carid = ?)";
                         if ($tripStmt = mysqli_prepare($link, $sql)) {
-                            mysqli_stmt_bind_param($tripStmt, "s", $_SESSION['uid']);
+                            mysqli_stmt_bind_param($tripStmt, "s", $carId);
                         } else {
                             echo "somehting went wrong1...";
                         }
@@ -143,13 +143,83 @@ if ($showOwnTrips === 1) {
                         }
                         if (mysqli_stmt_num_rows($tripStmt) > 0) {
                             //ADD ALL VARIABLES
-                            if (mysqli_stmt_bind_result($tripStmt)) {
-
-
+                            $tripId = $starttime = $country = $startcity = $startstreet = $endcity = $endstreet = $monday = $tuesday = $wednesday = $thursday = $friday = $saturday = $sunday = NULL;
+                            if (mysqli_stmt_bind_result($tripStmt, $tripId, $starttime, $country, $startcity, $startstreet, $endcity, $endstreet, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday)) {
+                                for ($k = 1; $k <= mysqli_stmt_num_rows($tripStmt); $k++) {
+                                    if (mysqli_stmt_fetch($tripStmt)) { ?>
+                                        <div class="card card-body m-2">
+                                            <div class="row alert alert-primary card-title">
+                                                <div class="col-10">
+                                                    <h5 class="mt-2">Trip
+                                                        to: <? echo $endstreet . ", " . $endcity; ?></h5>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button class="nav-right btn btn-primary" type="button"
+                                                            id="searchTripBtn"><a
+                                                                href="tripdetails.php?trip=<? echo $tripId; ?>"
+                                                                style="color: white">Details</a></button>
+                                                </div>
+                                            </div>
+                                            <table class="table table-borderless" style="width: 80%;">
+                                                <tr>
+                                                    <th scope="row">Car</th>
+                                                    <td><? echo $carMake . " " . $carModel; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Country</th>
+                                                    <td><? echo $country; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Starting Point Address</th>
+                                                    <td><? echo $startstreet . ", " . $startcity; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Final Stop Address</th>
+                                                    <td><? echo $endstreet . ", " . $endcity; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Time</th>
+                                                    <td><? echo $starttime; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Days</th>
+                                                    <td>
+                                                        <span <? if ($monday === 0) {
+                                                            echo 'class="disappear"';
+                                                        } ?>>   monday,   </span>
+                                                        <span <? if ($tuesday === 0) {
+                                                            echo 'class="disappear"';
+                                                        } ?>>   tuesday,   </span>
+                                                        <span <? if ($wednesday === 0) {
+                                                            echo 'class="disappear"';
+                                                        } ?>>   wednesday,   </span>
+                                                        <span <? if ($thursday === 0) {
+                                                            echo 'class="disappear"';
+                                                        } ?>>   thursday,   </span>
+                                                        <span <? if ($friday === 0) {
+                                                            echo 'class="disappear"';
+                                                        } ?>>   friday,   </span>
+                                                        <span <? if ($saturday === 0) {
+                                                            echo 'class="disappear"';
+                                                        } ?>>   saturday,   </span>
+                                                        <span <? if ($sunday === 0) {
+                                                            echo 'class="disappear"';
+                                                        } ?>>   sunday,   </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <?
+                                    } else {
+                                        echo "Fetch failed, please try again.";
+                                    }
+                                }
                             } else {
                                 echo "Binding output parameters failed: (" . $tripStmt->errno . ") " . $tripStmt->error;
                             }
                         }
+                    } else {
+                        echo "Fetch error";
                     }
                 }
             }

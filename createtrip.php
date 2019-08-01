@@ -8,6 +8,7 @@ if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
 }
+require_once "includes/inputValidation.php";
 
 $hasCar = 0;
 $nOfCars = 0;
@@ -39,10 +40,92 @@ if (mysqli_stmt_num_rows($stmt) > 0) {
     exit;
 }
 
+$tripExistsError = 0;
+
 if (isset($_POST['submit'])) {
 
-    $sql = "INSERT INTO trips (carid, starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday) 
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $carId = cleanInput($_POST["car"]);
+    $startTime = cleanInput($_POST["time"]);
+    $country = cleanInput($_POST["country"]);
+    $startCity = cleanInput($_POST["startcity"]);
+    $endCity = cleanInput($_POST["endcity"]);
+    $startStreet = cleanInput($_POST["startstreet"]);
+    $endStreet = cleanInput($_POST["endstreet"]);
+    if (isset($_POST["monday"])) {
+        $monday = 1;
+    } else {
+        $monday = 0;
+    }
+    if (isset($_POST["tuesday"])) {
+        $tuesday = 1;
+    } else {
+        $tuesday = 0;
+    }
+    if (isset($_POST["wednesday"])) {
+        $wednesday = 1;
+    } else {
+        $wednesday = 0;
+    }
+    if (isset($_POST["thursday"])) {
+        $thursday = 1;
+    } else {
+        $thursday = 0;
+    }
+    if (isset($_POST["friday"])) {
+        $friday = 1;
+    } else {
+        $friday = 0;
+    }
+    if (isset($_POST["saturday"])) {
+        $saturday = 1;
+    } else {
+        $saturday = 0;
+    }
+    if (isset($_POST["sunday"])) {
+        $sunday = 1;
+    } else {
+        $sunday = 0;
+    }
+
+    $sql = "SELECT * FROM trips WHERE carid = ? AND startcity = ? AND endcity = ? AND startstreet = ? AND endstreet = ? AND starttime < ? AND starttime > ?";
+
+    if ($chackStmt = mysqli_prepare($link, $sql)) {
+        $tmpTime1 = strval(strtotime($startTime) + 60 * 60);
+        $tmpTime2 = strval(strtotime($startTime) - 60 * 60);
+        echo $tmpTime1;
+        mysqli_stmt_bind_param($chackStmt, "sssssss", $carId, $startCity, $endCity, $startStreet, $endStreet, $tmpTime1, $tmpTime2);
+    } else {
+        echo "somehting went wrong...";
+    }
+    if (mysqli_stmt_execute($chackStmt)) {
+        mysqli_stmt_store_result($chackStmt);
+
+    } else {
+        echo "Something went wrong. Please try again later.";
+    }
+    if (mysqli_stmt_num_rows($chackStmt) === 0) {
+
+        $sql = "INSERT INTO trips (carid, starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        if ($chackStmt = mysqli_prepare($link, $sql)) {
+            mysqli_stmt_bind_param($chackStmt, "ssssssssssssss", $carId, $startTime, $country, $startCity, $startStreet, $endCity, $endStreet, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday);
+        } else {
+            echo "somehting went wrong...";
+        }
+        if (mysqli_stmt_execute($chackStmt)) {
+
+            header("location: trips.php");
+            exit;
+
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
+    } else {
+        $tripExistsError = 1;
+    }
+
+    mysqli_stmt_close($chackStmt);
+
 }
 
 ?>
@@ -62,6 +145,14 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         <form action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group">
                 <div style="width: 60%">
+
+                    <p class="invalid_text"> <?
+                        if ($tripExistsError === 1) {
+                            echo "This trip, or a very very similar one exists already, please try again!";
+                        }
+                        ?>
+                    </p>
+
                     <label for="carSelect">Select the car you want to create a trip for</label>
                     <br>
                     <select name="car" id="carSelect" class="form-control">
