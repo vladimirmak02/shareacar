@@ -5,7 +5,7 @@ require_once "includes/a_config.php";
 
 // Check if the user is logged in, if not then redirect him to login page
 if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
-    header("location: login.php");
+    header("location: /login.php");
     exit;
 }
 
@@ -80,7 +80,7 @@ if ($showOwnTrips === 1) {
     <br>
     <div class="container" style="padding: 5px">
         <div class="row mb-4">
-            <div class="col-8">
+            <div class="col-7">
                 <form action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" class="form-inline">
                     <div class="form-group">
                         <label for="selectSearch" class="mr-3">Show me </label>
@@ -105,7 +105,7 @@ if ($showOwnTrips === 1) {
                     </div>
                 </form>
             </div>
-            <div class="col-4">
+            <div class="col-5">
                 <button class="nav-right btn btn-primary mx-3 <? if ($hasCar === 0) {
                     echo "disappear";
                 } ?>" type="button" id="addNewTripBtn"><a href="createtrip.php" style="color: white">Add your own
@@ -123,7 +123,7 @@ if ($showOwnTrips === 1) {
                     <h4 class="alert-heading">You do not have a car!</h4>
                     <p>Since you have no cars registered, we cannot show you any trips that you created yourself.
                         Please consider registering your own car in order to create your own trips, <a
-                                href="createcar.php">click
+                                href="createcar.php" class="alert-link">click
                             here</a> to do so!</p>
                 </div>
             <? } elseif ($nOfCars >= 1) {
@@ -156,7 +156,8 @@ if ($showOwnTrips === 1) {
                                                 <div class="col-2">
                                                     <button class="nav-right btn btn-primary" type="button"
                                                             id="searchTripBtn"><a
-                                                                href="tripdetails.php?trip=<? echo $tripId; ?>"
+                                                                href="tripdetails.php/?trip=<? echo $tripId; ?>"
+                                                                target="_blank"
                                                                 style="color: white">Details</a></button>
                                                 </div>
                                             </div>

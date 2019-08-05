@@ -46,12 +46,24 @@ switch ($_SERVER["SCRIPT_NAME"]) {
         $CURRENT_PAGE = "Trips";
         $PAGE_TITLE = "My Trips";
         break;
+    case "/searchtrip.php":
+        $CURRENT_PAGE = "Searchtrip";
+        $PAGE_TITLE = "Search for a trip";
+        break;
+    case "/createtrip.php":
+        $CURRENT_PAGE = "Createtrip";
+        $PAGE_TITLE = "Create a trip";
+        break;
+    case "/tripdetails.php":
+        $CURRENT_PAGE = "Tripdetails";
+        $PAGE_TITLE = "Trip Details";
+        break;
     /*    case "/contact.php":
             $CURRENT_PAGE = "Contact";
             $PAGE_TITLE = "Contact Us";
             break;*/
     default:
-        $CURRENT_PAGE = "Index";
-        $PAGE_TITLE = "Welcome to my homepage!";
+        $CURRENT_PAGE = "Shareacar";
+        $PAGE_TITLE = "Share a Car";
 }
 ?>

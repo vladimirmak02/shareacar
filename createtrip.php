@@ -5,7 +5,7 @@ require_once "includes/a_config.php";
 
 // Check if the user is logged in, if not then redirect him to login page
 if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
-    header("location: login.php");
+    header("location: /login.php");
     exit;
 }
 require_once "includes/inputValidation.php";
@@ -89,30 +89,30 @@ if (isset($_POST['submit'])) {
 
     $sql = "SELECT * FROM trips WHERE carid = ? AND startcity = ? AND endcity = ? AND startstreet = ? AND endstreet = ? AND starttime < ? AND starttime > ?";
 
-    if ($chackStmt = mysqli_prepare($link, $sql)) {
+    if ($checkStmt = mysqli_prepare($link, $sql)) {
         $tmpTime1 = strval(strtotime($startTime) + 60 * 60);
         $tmpTime2 = strval(strtotime($startTime) - 60 * 60);
         echo $tmpTime1;
-        mysqli_stmt_bind_param($chackStmt, "sssssss", $carId, $startCity, $endCity, $startStreet, $endStreet, $tmpTime1, $tmpTime2);
+        mysqli_stmt_bind_param($checkStmt, "sssssss", $carId, $startCity, $endCity, $startStreet, $endStreet, $tmpTime1, $tmpTime2);
     } else {
         echo "somehting went wrong...";
     }
-    if (mysqli_stmt_execute($chackStmt)) {
-        mysqli_stmt_store_result($chackStmt);
+    if (mysqli_stmt_execute($checkStmt)) {
+        mysqli_stmt_store_result($checkStmt);
 
     } else {
         echo "Something went wrong. Please try again later.";
     }
-    if (mysqli_stmt_num_rows($chackStmt) === 0) {
+    if (mysqli_stmt_num_rows($checkStmt) === 0) {
 
         $sql = "INSERT INTO trips (carid, starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        if ($chackStmt = mysqli_prepare($link, $sql)) {
-            mysqli_stmt_bind_param($chackStmt, "ssssssssssssss", $carId, $startTime, $country, $startCity, $startStreet, $endCity, $endStreet, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday);
+        if ($checkStmt = mysqli_prepare($link, $sql)) {
+            mysqli_stmt_bind_param($checkStmt, "ssssssssssssss", $carId, $startTime, $country, $startCity, $startStreet, $endCity, $endStreet, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday);
         } else {
             echo "somehting went wrong...";
         }
-        if (mysqli_stmt_execute($chackStmt)) {
+        if (mysqli_stmt_execute($checkStmt)) {
 
             header("location: trips.php");
             exit;
@@ -124,7 +124,7 @@ if (isset($_POST['submit'])) {
         $tripExistsError = 1;
     }
 
-    mysqli_stmt_close($chackStmt);
+    mysqli_stmt_close($checkStmt);
 
 }
 

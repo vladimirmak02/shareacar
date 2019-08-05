@@ -10,7 +10,7 @@
             <a class="navbar-brand" href="/index.php"><img src="/res/logosmall.png"
                                                            style="height: 2em; margin-top: -0.2em;"></a>
             <li class="nav-item ">
-                <a class="nav-link <? if ($CURRENT_PAGE == "Index") { ?>active<? } ?>" href="/index.php">Home</a>
+                <a class="nav-link <? if ($CURRENT_PAGE == "Shareacar") { ?>active<? } ?>" href="/index.php">Home</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <? if ($CURRENT_PAGE == "Trips") { ?>active<? }

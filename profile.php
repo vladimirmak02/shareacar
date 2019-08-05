@@ -5,7 +5,7 @@ require_once "includes/a_config.php";
 
 // Check if the user is logged in, if not then redirect him to login page
 if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
-    header("location: login.php");
+    header("location: /login.php");
     exit;
 }
 
@@ -137,7 +137,7 @@ if (mysqli_stmt_num_rows($stmt) > 0) {
                     <div class="card card-body">
                         <h5 class="card-title alert alert-primary">Car: <? echo $carMake . " " . $carModel; ?></h5>
                         <table class="table table-borderless" style="width: 50%;">
-                            <img style="width: 70%;" src="<? echo $carImagePath ?>">
+                            <img style="width: 70%;" src="/<? echo $carImagePath ?>">
                             <tr>
                                 <th scope="row" width="60%">Number Plate (ID)</th>
                                 <td><? echo $carId; ?></td>
