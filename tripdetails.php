@@ -12,6 +12,8 @@ if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
 }
 require_once "includes/inputValidation.php";
 
+$userIsDriver = 0;
+
 if (isset($_GET["trip"])) {
     $tripId = cleanInput($_GET["trip"]);
     $sql = "SELECT carid, starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday FROM trips WHERE (tripid = ?)";
@@ -74,6 +76,9 @@ if (isset($_GET["trip"])) {
                         if (mysqli_stmt_bind_result($stmt, $first_name, $last_name, $email)) {
                             mysqli_stmt_fetch($stmt);
 
+                            if ($_SESSION["uid"] === $driverId) {
+                                $userIsDriver = 1;
+                            }
 
                         } else {
                             echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
@@ -85,7 +90,7 @@ if (isset($_GET["trip"])) {
                 }
             }
 
-            $sql = "SELECT passenger, time, city, street, approved FROM trippassengers WHERE (trip = ?)";
+            $sql = "SELECT passenger, time, city, street FROM trippassengers WHERE (trip = ?) AND (approved = 1)";
 
             if ($tripStmt = mysqli_prepare($link, $sql)) {
                 mysqli_stmt_bind_param($tripStmt, "s", $tripId);
@@ -101,13 +106,40 @@ if (isset($_GET["trip"])) {
             }
             if ($numberOfPassengers > 0) {
                 $passengerId = $passengerTime = $passengerCity = $passengerStreet = "";
-                $passengerApproved = 0;
-                if (mysqli_stmt_bind_result($tripStmt, $passengerId, $passengerTime, $passengerCity, $passengerStreet, $passengerApproved)) {
-                    mysqli_stmt_fetch($tripStmt);
+                if (mysqli_stmt_bind_result($tripStmt, $passengerId, $passengerTime, $passengerCity, $passengerStreet)) {
 
 
                 } else {
                     echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                }
+            }
+
+            if ($userIsDriver === 0) {
+                $userIsPassenger = 0;
+                $sql = "SELECT approved FROM trippassengers WHERE (trip = ?) AND (passenger = ?)";
+
+                if ($passengerStmt = mysqli_prepare($link, $sql)) {
+                    mysqli_stmt_bind_param($passengerStmt, "ss", $tripId, $_SESSION["uid"]);
+                } else {
+                    echo "somehting went wrong2...";
+                }
+                if (mysqli_stmt_execute($passengerStmt)) {
+                    mysqli_stmt_store_result($passengerStmt);
+
+
+                } else {
+                    echo "Something went wrong. Please try again later.";
+                }
+                if (mysqli_stmt_num_rows($passengerStmt) > 0) {
+                    $passengerApproved = 0;
+                    $userIsPassenger = 1;
+                    if (mysqli_stmt_bind_result($passengerStmt, $passengerApproved)) {
+                        mysqli_stmt_fetch($passengerStmt);
+
+
+                    } else {
+                        echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                    }
                 }
             }
 
@@ -130,12 +162,42 @@ if (isset($_GET["trip"])) {
     <br>
     <div class="container" style="padding: 5px">
 
+        <? if ($passengerApproved === 0) { ?>
+            <div class="alert alert-warning m-3" role="alert">
+                <h4 class="alert-heading">The driver has not approved your application yet!</h4>
+                <p>Please wait until the driver either accepts, or declines your application to this trip.</p>
+            </div>
+        <? } elseif ($passengerApproved === -1) { ?>
+            <div class="alert alert-danger m-3" role="alert">
+                <h4 class="alert-heading">The driver declined your application!</h4>
+                <p>Unfortunately, your application to this trip was <i>not accepted</i> by the driver, please apply to
+                    another trip, or create your own!</p>
+                <!--TODO: ADD LINKS-->
+            </div>
+        <? } elseif ($passengerApproved === 1) { ?>
+            <div class="alert alert-success m-3" role="alert">
+                <h4 class="alert-heading">You are a passenger in this trip!</h4>
+                <p>Your application to this trip was <i>accepted</i> by the driver, your stop was added to the map!</p>
+                <!--TODO: ADD LINKS-->
+            </div>
+        <? } ?>
+
         <div class="card card-body m-2">
-            <div class="alert alert-primary card-title">
 
-                <h5 class="mt-2">Trip
-                    to: <? echo $endstreet . ", " . $endcity; ?></h5>
-
+            <div class="row alert alert-primary card-title">
+                <div class="col-10">
+                    <h5 class="mt-2">Trip
+                        to: <? echo $endstreet . ", " . $endcity; ?></h5>
+                </div>
+                <div class="col-2">
+                    <button class="nav-right btn btn-success <? if ($userIsPassenger === 1) {
+                        echo "disappear";
+                    } ?>" type="button"
+                            id="applyBtn"><a
+                                href="tripapply.php/?trip=<? echo $tripId; ?>"
+                                target="_blank"
+                                style="color: white">Apply to this trip</a></button>
+                </div>
             </div>
             <table class="table table-borderless" style="width: 80%;">
                 <tr>
@@ -241,6 +303,7 @@ if (isset($_GET["trip"])) {
     function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         var waypts = [];
         for (var i = 0; i < <? echo $numberOfPassengers?>; i++) {
+            <? mysqli_stmt_fetch($tripStmt); ?>
             waypts.push({
                 location: '<? echo $passengerStreet . ", " . $passengerCity?>',
                 stopover: false
