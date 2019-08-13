@@ -12,7 +12,12 @@ if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
 }
 require_once "includes/inputValidation.php";
 
+require_once ".apikey.php";
+
 $userIsDriver = 0;
+$passengerApproved = NULL;
+$userIsPassenger = NULL;
+
 
 if (isset($_GET["trip"])) {
     $tripId = cleanInput($_GET["trip"]);
@@ -131,7 +136,6 @@ if (isset($_GET["trip"])) {
                     echo "Something went wrong. Please try again later.";
                 }
                 if (mysqli_stmt_num_rows($passengerStmt) > 0) {
-                    $passengerApproved = 0;
                     $userIsPassenger = 1;
                     if (mysqli_stmt_bind_result($passengerStmt, $passengerApproved)) {
                         mysqli_stmt_fetch($passengerStmt);
@@ -190,7 +194,7 @@ if (isset($_GET["trip"])) {
                         to: <? echo $endstreet . ", " . $endcity; ?></h5>
                 </div>
                 <div class="col-2">
-                    <button class="nav-right btn btn-success <? if ($userIsPassenger === 1) {
+                    <button class="nav-right btn btn-success <? if ($userIsPassenger === 1 OR $userIsDriver === 1) {
                         echo "disappear";
                     } ?>" type="button"
                             id="applyBtn"><a
@@ -338,7 +342,7 @@ if (isset($_GET["trip"])) {
     }
 </script>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJzLXoUHiXP_SZX6aKoocacsejOiNY7Xk&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=<? echo $mapsKEY ?>&callback=initMap">
 </script>
 
 
