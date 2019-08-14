@@ -31,7 +31,7 @@
         </ul>
         <ul class="nav nav-right">
             <li class="nav-item">
-
+                <!--TODO: ADD MESSAGE FUNCTIONALITY TO FACILITATE TRIP APPROVAL-->
                 <a class="nav-link <? if ($CURRENT_PAGE == "Login") { ?>active<? }
                 if (isset($_SESSION["loggedin"])) {
                     if ($_SESSION["loggedin"] === true) { ?> disappear <? }

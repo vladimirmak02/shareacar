@@ -95,7 +95,7 @@ if (isset($_GET["trip"])) {
                 }
             }
 
-            $sql = "SELECT passenger, time, city, street FROM trippassengers WHERE (trip = ?) AND (approved = 1)";
+            $sql = "SELECT passenger, time, startcity, startstreet, endcity, endstreet FROM trippassengers WHERE (trip = ?) AND (approved = 1)";
 
             if ($tripStmt = mysqli_prepare($link, $sql)) {
                 mysqli_stmt_bind_param($tripStmt, "s", $tripId);
@@ -110,8 +110,8 @@ if (isset($_GET["trip"])) {
                 echo "Something went wrong. Please try again later.";
             }
             if ($numberOfPassengers > 0) {
-                $passengerId = $passengerTime = $passengerCity = $passengerStreet = "";
-                if (mysqli_stmt_bind_result($tripStmt, $passengerId, $passengerTime, $passengerCity, $passengerStreet)) {
+                $passengerId = $passengerTime = $passengerStartCity = $passengerStartStreet = $passengerEndCity = $passengerEndStreet = "";
+                if (mysqli_stmt_bind_result($tripStmt, $passengerId, $passengerTime, $passengerStartCity, $passengerStartStreet, $passengerEndCity, $passengerEndStreet)) {
 
 
                 } else {
@@ -145,6 +145,50 @@ if (isset($_GET["trip"])) {
                         echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
                     }
                 }
+            } elseif ($userIsDriver === 1) {
+
+                if (isset($_POST["status"])) {
+                    $passengerId = $_POST["passenger"];
+                    $passengerApproved = $_POST["status"];
+
+                    $sql = "UPDATE trippassengers SET approved = ? WHERE (passenger = ?)";
+
+                    if ($passengerStmt = mysqli_prepare($link, $sql)) {
+                        mysqli_stmt_bind_param($passengerStmt, "is", $passengerApproved, $passengerId);
+                    } else {
+                        echo "somehting went wrong2...";
+                    }
+                    if (mysqli_stmt_execute($passengerStmt)) {
+
+                    } else {
+                        echo "Something went wrong. Please try again later.";
+                    }
+
+                }
+
+                $sql = "SELECT passenger, time, startcity, startstreet, endcity, endstreet FROM trippassengers WHERE (trip = ?) AND (approved = 0)";
+                $unapprovedPassengers = 0;
+                if ($passengerStmt = mysqli_prepare($link, $sql)) {
+                    mysqli_stmt_bind_param($passengerStmt, "s", $tripId);
+                } else {
+                    echo "somehting went wrong2...";
+                }
+                if (mysqli_stmt_execute($passengerStmt)) {
+                    mysqli_stmt_store_result($passengerStmt);
+
+                } else {
+                    echo "Something went wrong. Please try again later.";
+                }
+                if (mysqli_stmt_num_rows($passengerStmt) > 0) {
+                    $unapprovedPassengers = mysqli_stmt_num_rows($passengerStmt);
+                    $passengerId = $passengerTime = $passengerStartCity = $passengerStartStreet = $passengerEndCity = $passengerEndStreet = "";
+                    if (mysqli_stmt_bind_result($passengerStmt, $passengerId, $passengerTime, $passengerStartCity, $passengerStartStreet, $passengerEndCity, $passengerEndStreet)) {
+
+
+                    } else {
+                        echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                    }
+                }
             }
 
         } else {
@@ -168,7 +212,7 @@ if (isset($_GET["trip"])) {
 
         <? if ($passengerApproved === 0) { ?>
             <div class="alert alert-warning m-3" role="alert">
-                <h4 class="alert-heading">The driver has not approved your application yet!</h4>
+                <h4 class="alert-heading">The driver has not approved your application <i>yet!</i></h4>
                 <p>Please wait until the driver either accepts, or declines your application to this trip.</p>
             </div>
         <? } elseif ($passengerApproved === -1) { ?>
@@ -186,6 +230,31 @@ if (isset($_GET["trip"])) {
             </div>
         <? } ?>
 
+        <? if ($userIsDriver === 1 and $unapprovedPassengers > 0) {
+            ?>
+            <h4>Unapproved Passengers</h4>
+            <? for ($i = 0; $i < $unapprovedPassengers; $i++) {
+                mysqli_stmt_fetch($passengerStmt); ?>
+                <form action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]) . "?trip=" . $tripId; ?>"
+                      method="post">
+                    <div class="form-group">
+                        <label>Passenger
+                            from <? echo $passengerStartStreet . ", " . $passengerStartCity . ". To " . $passengerEndStreet . ", " . $passengerEndCity . ". At " . $passengerTime; ?></label>
+                        <input type="hidden" name="passenger" value="<? echo $passengerId; ?>">
+                        <div class="form-inline">
+                            <button class="btn btn-success" id="submitBtn" name="status" value="1"
+                                    type="submit">Accept this passenger
+                            </button>
+                            <button class="btn btn-danger" id="submitBtn" name="status" value="-1"
+                                    type="submit">Reject this passenger
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <?
+            }
+        } ?>
+
         <div class="card card-body m-2">
 
             <div class="row alert alert-primary card-title">
@@ -198,7 +267,7 @@ if (isset($_GET["trip"])) {
                         echo "disappear";
                     } ?>" type="button"
                             id="applyBtn"><a
-                                href="tripapply.php/?trip=<? echo $tripId; ?>"
+                                href="/tripapply.php/?trip=<? echo $tripId; ?>"
                                 target="_blank"
                                 style="color: white">Apply to this trip</a></button>
                 </div>
@@ -230,6 +299,7 @@ if (isset($_GET["trip"])) {
                     <th scope="row">Passenger Seats Available</th>
                     <td><? echo $passengerNumber - $numberOfPassengers; ?></td>
                 </tr>
+
                 <tr>
                     <th scope="row">Driver Name</th>
                     <td><? echo $first_name . " " . $last_name; ?></td>
@@ -306,13 +376,16 @@ if (isset($_GET["trip"])) {
 
     function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         var waypts = [];
-        for (var i = 0; i < <? echo $numberOfPassengers?>; i++) {
-            <? mysqli_stmt_fetch($tripStmt); ?>
+        <? for ($i = 0; $i < $numberOfPassengers; $i++) { mysqli_stmt_fetch($tripStmt); ?>
             waypts.push({
-                location: '<? echo $passengerStreet . ", " . $passengerCity?>',
-                stopover: false
+                location: '<? echo $passengerStartStreet . ", " . $passengerStartCity?>',
+                stopover: true
             });
-        }
+        waypts.push({
+            location: '<? echo $passengerEndStreet . ", " . $passengerEndCity?>',
+            stopover: true
+        });
+        <?}?>
 
         directionsService.route({
             origin: '<? echo $startstreet . ", " . $startcity . ", " . $country?>',

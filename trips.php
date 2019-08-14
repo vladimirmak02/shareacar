@@ -64,6 +64,33 @@ if ($showOwnTrips === 1) {
     }
 }
 
+if ($showOtherTrips === 1) {
+
+    $sql = "SELECT trip, time, startcity, startstreet, endcity, endstreet, approved FROM trippassengers WHERE (passenger = ?)";
+
+    if ($passengerStmt = mysqli_prepare($link, $sql)) {
+        mysqli_stmt_bind_param($passengerStmt, "s", $_SESSION["uid"]);
+    } else {
+        echo "somehting went wrong2...";
+    }
+    if (mysqli_stmt_execute($passengerStmt)) {
+        mysqli_stmt_store_result($passengerStmt);
+        $numberOfTrips = mysqli_stmt_num_rows($passengerStmt);
+
+    } else {
+        echo "Something went wrong. Please try again later.";
+    }
+    if ($numberOfTrips > 0) {
+        $tripId = $passengerTime = $passengerStartCity = $passengerStartStreet = $passengerEndCity = $passengerEndStreet = $passengerApproved = NULL;
+        if (mysqli_stmt_bind_result($passengerStmt, $tripId, $passengerTime, $passengerStartCity, $passengerStartStreet, $passengerEndCity, $passengerEndStreet, $passengerApproved)) {
+
+
+        } else {
+            echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+        }
+    }
+}
+
 
 ?>
 
@@ -106,13 +133,13 @@ if ($showOwnTrips === 1) {
                 </form>
             </div>
             <div class="col-5">
-                <button class="nav-right btn btn-primary mx-3 <? if ($hasCar === 0) {
-                    echo "disappear";
-                } ?>" type="button" id="addNewTripBtn"><a href="createtrip.php" style="color: white">Add your own
-                        trip</a></button>
+                <? if ($hasCar != 0) { ?>
+                    <button class="nav-right btn btn-primary mx-3" type="button" id="addNewTripBtn"><a
+                                href="createtrip.php" style="color: white">Add your own
+                            trip</a></button> <? } ?>
                 <button class="nav-right btn btn-primary mx-3" type="button" id="searchTripBtn"><a href="searchtrip.php"
                                                                                                    style="color: white">Search
-                        for a trip</a></button>
+                        for a new trip</a></button>
             </div>
         </div>
 
@@ -225,10 +252,142 @@ if ($showOwnTrips === 1) {
                 }
             }
         }
-        if ($showOtherTrips === 1) { ?>
+        if ($showOtherTrips === 1) {
+            if ($numberOfTrips === 0) { ?>
+                <div class="alert alert-warning m-3" role="alert">
+                    <h4 class="alert-heading">You are not registered in any trips!</h4>
+                    <p>Since you have no trips that you applied for, we cannot show you any!</p>
+                </div>
+            <? } elseif ($numberOfTrips >= 1) {
+                for ($i = 1; $i <= $numberOfTrips; $i++) {
+                    if (mysqli_stmt_fetch($passengerStmt)) {
+                        $sql = "SELECT carid, starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday FROM trips WHERE (tripid = ?)";
+                        if ($tripStmt = mysqli_prepare($link, $sql)) {
+                            mysqli_stmt_bind_param($tripStmt, "s", $tripId);
+                        } else {
+                            echo "somehting went wrong1...";
+                        }
+                        if (mysqli_stmt_execute($tripStmt)) {
+                            mysqli_stmt_store_result($tripStmt);
 
+                        } else {
+                            echo "Something went wrong. Please try again later.";
+                        }
+                        if (mysqli_stmt_num_rows($tripStmt) > 0) {
+                            //ADD ALL VARIABLES
+                            $carId = $starttime = $country = $startcity = $startstreet = $endcity = $endstreet = $monday = $tuesday = $wednesday = $thursday = $friday = $saturday = $sunday = NULL;
+                            if (mysqli_stmt_bind_result($tripStmt, $carId, $starttime, $country, $startcity, $startstreet, $endcity, $endstreet, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday)) {
+                                if (mysqli_stmt_fetch($tripStmt)) {
+                                    $sql = "SELECT model, make FROM cars WHERE (carid = ?)";
+                                    if ($stmt = mysqli_prepare($link, $sql)) {
+                                        mysqli_stmt_bind_param($stmt, "s", $carId);
+                                    } else {
+                                        echo "somehting went wrong1...";
+                                    }
+                                    if (mysqli_stmt_execute($stmt)) {
+                                        mysqli_stmt_store_result($stmt);
 
-        <? }
+                                    } else {
+                                        echo "Something went wrong. Please try again later.";
+                                    }
+                                    if (mysqli_stmt_num_rows($stmt) > 0) {
+                                        $carMake = "";
+                                        $carModel = "";
+                                        if (mysqli_stmt_bind_result($stmt, $carModel, $carMake)) {
+                                            if (mysqli_stmt_fetch($stmt)) {
+
+                                                ?>
+                                                <div class="card card-body m-2">
+                                                    <div class="row alert <? if ($passengerApproved === 1) {
+                                                        echo "alert-success";
+                                                    } elseif ($passengerApproved === 0) {
+                                                        echo "alert-warning";
+                                                    } elseif ($passengerApproved === -1) {
+                                                        echo "alert-danger";
+                                                    } ?> card-title">
+                                                        <div class="col-10">
+                                                            <h5 class="mt-2">Trip
+                                                                to: <? echo $endstreet . ", " . $endcity; ?></h5>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <button class="nav-right btn btn-primary" type="button"
+                                                                    id="searchTripBtn"><a
+                                                                        href="tripdetails.php/?trip=<? echo $tripId; ?>"
+                                                                        target="_blank"
+                                                                        style="color: white">Details</a></button>
+                                                        </div>
+                                                    </div>
+                                                    <table class="table table-borderless" style="width: 80%;">
+                                                        <tr>
+                                                            <th scope="row">Car</th>
+                                                            <td><? echo $carMake . " " . $carModel; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Country</th>
+                                                            <td><? echo $country; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Starting Point Address</th>
+                                                            <td><? echo $startstreet . ", " . $startcity; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Final Stop Address</th>
+                                                            <td><? echo $endstreet . ", " . $endcity; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Time</th>
+                                                            <td><? echo $starttime; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Days</th>
+                                                            <td>
+                                                        <span <? if ($monday === 0) {
+                                                            echo 'class="disappear"';
+                                                        } ?>>   monday,   </span>
+                                                                <span <? if ($tuesday === 0) {
+                                                                    echo 'class="disappear"';
+                                                                } ?>>   tuesday,   </span>
+                                                                <span <? if ($wednesday === 0) {
+                                                                    echo 'class="disappear"';
+                                                                } ?>>   wednesday,   </span>
+                                                                <span <? if ($thursday === 0) {
+                                                                    echo 'class="disappear"';
+                                                                } ?>>   thursday,   </span>
+                                                                <span <? if ($friday === 0) {
+                                                                    echo 'class="disappear"';
+                                                                } ?>>   friday,   </span>
+                                                                <span <? if ($saturday === 0) {
+                                                                    echo 'class="disappear"';
+                                                                } ?>>   saturday,   </span>
+                                                                <span <? if ($sunday === 0) {
+                                                                    echo 'class="disappear"';
+                                                                } ?>>   sunday,   </span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <?
+
+                                            }
+
+                                        } else {
+                                            echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                                        }
+                                    }
+
+                                } else {
+                                    echo "Fetch failed, please try again.";
+                                }
+                            }
+                        } else {
+                            echo "Binding output parameters failed: (" . $tripStmt->errno . ") " . $tripStmt->error;
+                        }
+                    } else {
+                        echo "Fetch error";
+                    }
+                }
+            }
+        }
         ?>
 
 
