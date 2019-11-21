@@ -1,6 +1,4 @@
-<?php
-
-
+<?
 session_start();
 
 require_once "includes/a_config.php";
@@ -19,6 +17,139 @@ $passengerApproved = NULL;
 $userIsPassenger = NULL;
 
 
+if (isset($_GET["trip"])) {
+    $tripId = cleanInput($_GET["trip"]);
+    $sql = "SELECT  t.carid, t.starttime, t.country, t.startcity, t.startstreet, t.endcity, t.endstreet, t.monday, t.tuesday, t.wednesday, t.thursday, t.friday, t.saturday, t.sunday, c.driverid, c.model, c.year, c.make, c.color, c.type, c.passengers, c.imagepath, u.first_name, u.last_name, u.email FROM trips AS t INNER JOIN cars AS c ON c.carid = t.carid INNER JOIN users AS u ON u.id = c.driverid WHERE (tripid = ?)";
+
+    if ($tripStmt = mysqli_prepare($link, $sql)) {
+        mysqli_stmt_bind_param($tripStmt, "s", $tripId);
+    } else {
+        echo "somehting went wrong1...";
+    }
+    if (mysqli_stmt_execute($tripStmt)) {
+        mysqli_stmt_store_result($tripStmt);
+
+    } else {
+        echo "Something went wrong. Please try again later.";
+    }
+    if (mysqli_stmt_num_rows($tripStmt) > 0) {
+        //ADD ALL VARIABLES
+        $carId = $starttime = $country = $startcity = $startstreet = $endcity = $endstreet = $monday = $tuesday = $wednesday = $thursday = $friday = $saturday = $sunday = $driverId = $carMake = $carModel = $carYear = $carColor = $carType = $passengerNumber = $carImagePath = $first_name = $last_name = $email = NULL;
+        if (mysqli_stmt_bind_result($tripStmt, $carId, $starttime, $country, $startcity, $startstreet, $endcity, $endstreet, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday, $driverId, $carModel, $carYear, $carMake, $carColor, $carType, $passengerNumber, $carImagePath, $first_name, $last_name, $email)) {
+            mysqli_stmt_fetch($tripStmt);
+            if ($_SESSION["uid"] === $driverId) {
+                $userIsDriver = 1;
+            }
+
+        }
+
+        $sql = "SELECT passenger, time, startcity, startstreet, endcity, endstreet FROM trippassengers WHERE (trip = ?) AND (approved = 1)";
+
+        if ($tripStmt = mysqli_prepare($link, $sql)) {
+            mysqli_stmt_bind_param($tripStmt, "s", $tripId);
+        } else {
+            echo "somehting went wrong2...";
+        }
+        if (mysqli_stmt_execute($tripStmt)) {
+            mysqli_stmt_store_result($tripStmt);
+            $numberOfPassengers = mysqli_stmt_num_rows($tripStmt);
+
+        } else {
+            echo "Something went wrong. Please try again later.";
+        }
+        if ($numberOfPassengers > 0) {
+            $passengerId = $passengerTime = $passengerStartCity = $passengerStartStreet = $passengerEndCity = $passengerEndStreet = "";
+            if (mysqli_stmt_bind_result($tripStmt, $passengerId, $passengerTime, $passengerStartCity, $passengerStartStreet, $passengerEndCity, $passengerEndStreet)) {
+
+
+            } else {
+                echo "Binding output parameters failed: (" . $tripStmt->errno . ") " . $tripStmt->error;
+            }
+        }
+
+        if ($userIsDriver === 0) {
+            $userIsPassenger = 0;
+            $sql = "SELECT approved FROM trippassengers WHERE (trip = ?) AND (passenger = ?)";
+
+            if ($passengerStmt = mysqli_prepare($link, $sql)) {
+                mysqli_stmt_bind_param($passengerStmt, "ss", $tripId, $_SESSION["uid"]);
+            } else {
+                echo "somehting went wrong2...";
+            }
+            if (mysqli_stmt_execute($passengerStmt)) {
+                mysqli_stmt_store_result($passengerStmt);
+
+
+            } else {
+                echo "Something went wrong. Please try again later.";
+            }
+            if (mysqli_stmt_num_rows($passengerStmt) > 0) {
+                $userIsPassenger = 1;
+                if (mysqli_stmt_bind_result($passengerStmt, $passengerApproved)) {
+                    mysqli_stmt_fetch($passengerStmt);
+
+
+                } else {
+                    echo "Binding output parameters failed: (" . $passengerStmt->errno . ") " . $passengerStmt->error;
+                }
+            }
+        } elseif ($userIsDriver === 1) {
+
+            if (isset($_POST["status"])) {
+                $passengerId = $_POST["passenger"];
+                $passengerApproved = $_POST["status"];
+
+                $sql = "UPDATE trippassengers SET approved = ? WHERE (passenger = ?)";
+
+                if ($passengerStmt = mysqli_prepare($link, $sql)) {
+                    mysqli_stmt_bind_param($passengerStmt, "is", $passengerApproved, $passengerId);
+                } else {
+                    echo "somehting went wrong2...";
+                }
+                if (mysqli_stmt_execute($passengerStmt)) {
+
+                } else {
+                    echo "Something went wrong. Please try again later.";
+                }
+
+            }
+
+            $sql = "SELECT passenger, time, startcity, startstreet, endcity, endstreet FROM trippassengers WHERE (trip = ?) AND (approved = 0)";
+            $unapprovedPassengers = 0;
+            if ($passengerStmt = mysqli_prepare($link, $sql)) {
+                mysqli_stmt_bind_param($passengerStmt, "s", $tripId);
+            } else {
+                echo "somehting went wrong2...";
+            }
+            if (mysqli_stmt_execute($passengerStmt)) {
+                mysqli_stmt_store_result($passengerStmt);
+
+            } else {
+                echo "Something went wrong. Please try again later.";
+            }
+            if (mysqli_stmt_num_rows($passengerStmt) > 0) {
+                $unapprovedPassengers = mysqli_stmt_num_rows($passengerStmt);
+                $passengerId = $passengerTime = $passengerStartCity = $passengerStartStreet = $passengerEndCity = $passengerEndStreet = "";
+                if (mysqli_stmt_bind_result($passengerStmt, $passengerId, $passengerTime, $passengerStartCity, $passengerStartStreet, $passengerEndCity, $passengerEndStreet)) {
+
+
+                } else {
+                    echo "Binding output parameters failed: (" . $passengerStmt->errno . ") " . $passengerStmt->error;
+                }
+            }
+        }
+
+    } else {
+        echo "error";
+    }
+
+}
+?>
+
+
+<!DOCTYPE html>
+<html>
+<!--
 if (isset($_GET["trip"])) {
     $tripId = cleanInput($_GET["trip"]);
     $sql = "SELECT carid, starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday FROM trips WHERE (tripid = ?)";
@@ -197,9 +328,7 @@ if (isset($_GET["trip"])) {
     }
 
 }
-?>
-<!DOCTYPE html>
-<html>
+-->
 <head>
     <? include("includes/head-tag-contents.php"); ?>
 </head>
@@ -368,7 +497,7 @@ if (isset($_GET["trip"])) {
         var directionsDisplay = new google.maps.DirectionsRenderer();
         var mapOptions = {
             //Some options maybe?
-        }
+        };
         var map = new google.maps.Map(document.getElementById('map'), mapOptions);
         directionsDisplay.setMap(map);
         calculateAndDisplayRoute(directionsService, directionsDisplay);
@@ -377,10 +506,10 @@ if (isset($_GET["trip"])) {
     function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         var waypts = [];
         <? for ($i = 0; $i < $numberOfPassengers; $i++) { mysqli_stmt_fetch($tripStmt); ?>
-            waypts.push({
-                location: '<? echo $passengerStartStreet . ", " . $passengerStartCity?>',
-                stopover: true
-            });
+        waypts.push({
+            location: '<? echo $passengerStartStreet . ", " . $passengerStartCity?>',
+            stopover: true
+        });
         waypts.push({
             location: '<? echo $passengerEndStreet . ", " . $passengerEndCity?>',
             stopover: true

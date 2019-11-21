@@ -1,7 +1,7 @@
 <?
 function cleanInput($a)
 {
-    return filter_var(htmlspecialchars(trim($a)), FILTER_SANITIZE_STRING);
+    return filter_var(htmlspecialchars(trim($a)), FILTER_SANITIZE_SPECIAL_CHARS);
 }
 
 function cleanEmail($a)

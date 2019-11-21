@@ -18,14 +18,15 @@ if (isset($_POST['submit'])) {
     $startCity = cleanInput($_POST["startcity"]);
     $endCity = cleanInput($_POST["endcity"]);
 
-    if ($endCity === "a") {
+    /* TODO: EXPLAIN THAT REMOVED AS BELOW CODE IMPROVED DUE TO QUERY WORKING WITHOUT END CITY
+     * if ($endCity === "a") {
         $sql = 'SELECT tripid, starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday FROM trips WHERE (startcity LIKE ?) AND (country = ?) ORDER BY starttime ASC';
         if ($tripStmt = mysqli_prepare($link, $sql)) {
             mysqli_stmt_bind_param($tripStmt, "sss", $startCity, $country);
         } else {
             echo "somehting went wrong1...";
         }
-    } else {
+    } else {*/
         $sql = 'SELECT tripid, starttime, country, startcity, startstreet, endcity, endstreet, monday, tuesday, wednesday, thursday, friday, saturday, sunday FROM trips WHERE (startcity LIKE ?) AND (country = ?) AND (endcity LIKE ?) ORDER BY starttime ASC';
         if ($tripStmt = mysqli_prepare($link, $sql)) {
             $tempStartCity = "%" . $startCity . "%";
@@ -34,7 +35,7 @@ if (isset($_POST['submit'])) {
         } else {
             echo "somehting went wrong1...";
         }
-    }
+//    }
     if (mysqli_stmt_execute($tripStmt)) {
         mysqli_stmt_store_result($tripStmt);
 
