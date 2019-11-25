@@ -16,15 +16,20 @@ YOUTUBE TUTORIAL ON SIGNUP & LOGIN
 </head>
 <body>
 
-<div id="main">
+<div id="main"
+     style='background-image: url("/res/home_background.jpg"); background-position: bottom; background-attachment: fixed; background-repeat: no-repeat; background-size: cover;'>
 
     <? include("includes/navigation.php"); ?>
-    <div class="container">
-
-        <p>Welcome<? if (isset($_SESSION['firstname'])) {
+    <div class="container" )>
+        <br>
+        <div style="height: 4em; background-color: rgba(255, 255, 255, 0.9); border-radius: 1em">
+            <p style="color: black; font-size: 1.5em; text-align: center; padding: 1em">
+                Welcome<? if (isset($_SESSION['firstname'])) {
                 echo " " . $_SESSION['firstname'];
             } ?>!</p>
-        <? print_r($_SESSION); ?>
+        </div>
+
+
     </div>
 </div>
 

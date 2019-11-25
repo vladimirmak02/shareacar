@@ -99,7 +99,7 @@ RIGHT JOIN users AS u ON u.id = c.driverid
 INNER JOIN trippassengers AS tp ON tp.passenger = u.id
 
 
-For tripdetails:
+//For tripdetails:
 
 SELECT  t.carid, t.starttime, t.country, t.startcity, t.startstreet, t.endcity, t.endstreet, t.monday, t.tuesday, t.wednesday, t.thursday, t.friday, t.saturday, t.sunday, c.driverid, c.model, c.year, c.make, c.color, c.type, c.passengers, c.imagepath, u.first_name, u.last_name, u.email FROM
 trips AS t
