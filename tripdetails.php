@@ -43,7 +43,9 @@ if (isset($_GET["trip"])) {
 
         }
 
-        $sql = "SELECT passenger, time, startcity, startstreet, endcity, endstreet FROM trippassengers WHERE (trip = ?) AND (approved = 1)";
+        $sql = "SELECT u.first_name, u.last_name, u.email, t.time, t.startcity, t.startstreet, t.endcity, t.endstreet FROM trippassengers AS t 
+INNER JOIN users AS u ON u.id = t.passenger
+WHERE (t.trip = ?) AND (t.approved = 1) ORDER BY t.time";
 
         if ($tripStmt = mysqli_prepare($link, $sql)) {
             mysqli_stmt_bind_param($tripStmt, "s", $tripId);
@@ -58,8 +60,8 @@ if (isset($_GET["trip"])) {
             echo "Something went wrong. Please try again later.";
         }
         if ($numberOfPassengers > 0) {
-            $passengerId = $passengerTime = $passengerStartCity = $passengerStartStreet = $passengerEndCity = $passengerEndStreet = "";
-            if (mysqli_stmt_bind_result($tripStmt, $passengerId, $passengerTime, $passengerStartCity, $passengerStartStreet, $passengerEndCity, $passengerEndStreet)) {
+            $passengerFirstName = $passengerLastName = $passengerEmail = $passengerTime = $passengerStartCity = $passengerStartStreet = $passengerEndCity = $passengerEndStreet = "";
+            if (mysqli_stmt_bind_result($tripStmt, $passengerFirstName, $passengerLastName, $passengerEmail, $passengerTime, $passengerStartCity, $passengerStartStreet, $passengerEndCity, $passengerEndStreet)) {
 
 
             } else {
@@ -481,6 +483,8 @@ if (isset($_GET["trip"])) {
                 </tr>
             </table>
 
+            <div id="tripCosts"></div>
+
         </div>
 
     </div>
@@ -505,7 +509,14 @@ if (isset($_GET["trip"])) {
 
     function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         var waypts = [];
+        var passengers = [];
         <? for ($i = 0; $i < $numberOfPassengers; $i++) { mysqli_stmt_fetch($tripStmt); ?>
+        passengers.push({
+            first_name: '<? echo $passengerFirstName?>',
+            last_name: '<? echo $passengerLastName?>',
+            email: '<? echo $passengerEmail?>',
+            time: '<? echo $passengerTime?>'
+        });
         waypts.push({
             location: '<? echo $passengerStartStreet . ", " . $passengerStartCity?>',
             stopover: true
@@ -520,23 +531,19 @@ if (isset($_GET["trip"])) {
             origin: '<? echo $startstreet . ", " . $startcity . ", " . $country?>',
             destination: '<? echo $endstreet . ", " . $endcity?>',
             waypoints: waypts,
-            optimizeWaypoints: true,
+            optimizeWaypoints: false,
             travelMode: 'DRIVING'
         }, function (response, status) {
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
                 var route = response.routes[0];
-                /*var summaryPanel = document.getElementById('directions-panel');
-                summaryPanel.innerHTML = '';
-                // For each route, display summary information.
                 for (var i = 0; i < route.legs.length; i++) {
-                    var routeSegment = i + 1;
-                    summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-                        '</b><br>';
-                    summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
-                    summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-                    summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
-                }*/
+                    $("#tripCosts").append('<b>Route Segment: ' + (i + 1).toString() + ', Passenger: ' + passengers[i].first_name + ' ' + passengers[i].last_name + ' <br>Email: ' + passengers[i].email + '</b><br>' + 'Time: ' + passengers[i].time + '<br>');
+                    $("#tripCosts").append(route.legs[i].start_address + ' to <br>');
+                    $("#tripCosts").append(route.legs[i].end_address + '<br>');
+                    $("#tripCosts").append('Distance : ' + Math.round(route.legs[i].distance.value / 1000) + ', Cost : ' + Math.round(route.legs[i].distance.value * 0.002) + '$<br><br>');
+                }
+
             } else {
                 window.alert('Directions request failed due to ' + status);
             }

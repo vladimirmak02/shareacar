@@ -161,7 +161,7 @@ if (isset($_POST['submit'])) {
                                         id="searchTripBtn"><a
                                             href="tripdetails.php/?trip=<? echo $tripId; ?>"
                                             target="_blank"
-                                            style="color: white">Details</a></button>
+                                            style="color: white">Details / Apply</a></button>
                             </div>
                         </div>
                         <table class="table table-borderless" style="width: 80%;">

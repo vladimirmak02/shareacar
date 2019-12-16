@@ -10,7 +10,7 @@ if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
 }
 
 if (isset($_POST['deleteCar'])) {
-    $sql = "DELETE FROM cars WHERE (imagepath = ?)";
+    $sql = "DELETE FROM cars WHERE (carid = ?)";
 
     if ($stmt = mysqli_prepare($link, $sql)) {
         mysqli_stmt_bind_param($stmt, "s", $_POST["deleteCar"]);
@@ -168,7 +168,7 @@ if (mysqli_stmt_num_rows($stmt) > 0) {
                             </tr>
                         </table>
                         <form action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                            <input type='hidden' name='deleteCar' value="<? echo $carImagePath; ?>"/>
+                            <input type='hidden' name='deleteCar' value="<? echo $carId; ?>"/>
                             <button class="btn btn-danger" id="deleteBtn<? echo $i; ?>" type="submit">Delete
                                 your <? echo $carMake . " " . $carModel; ?></button>
                         </form>

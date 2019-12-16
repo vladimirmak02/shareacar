@@ -60,7 +60,7 @@ CREATE TABLE trippassengers (
   approved tinyint(2) NOT NULL,
   PRIMARY KEY (trip,passenger),
   CONSTRAINT passengerid FOREIGN KEY (passenger) REFERENCES users(id),
-      CONSTRAINT tripid FOREIGN KEY (trip) REFERENCES trips(tripid)
+  CONSTRAINT tripid FOREIGN KEY (trip) REFERENCES trips(tripid)
 ) ENGINE=InnoDB;
 
 
@@ -108,3 +108,10 @@ INNER JOIN cars AS c ON c.carid = t.carid
 INNER JOIN users AS u ON u.id = c.driverid
 
 WHERE t.tripid = 1
+
+
+
+
+SELECT u.first_name, u.last_name, u.email, t.time, t.startcity, t.startstreet, t.endcity, t.endstreet FROM trippassengers AS t
+INNER JOIN users AS u ON u.id = t.passenger
+WHERE (t.trip = ?) AND (t.approved = 1)

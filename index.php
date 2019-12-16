@@ -22,8 +22,8 @@ YOUTUBE TUTORIAL ON SIGNUP & LOGIN
     <? include("includes/navigation.php"); ?>
     <div class="container" )>
         <br>
-        <div style="height: 4em; background-color: rgba(255, 255, 255, 0.9); border-radius: 1em">
-            <p style="color: black; font-size: 1.5em; text-align: center; padding: 1em">
+        <div style="height: 4rem; background-color: rgba(255, 255, 255, 0.9); border-radius: 1rem">
+            <p style="color: black; font-size: 1.5rem; text-align: center; padding: 0.5rem">
                 Welcome<? if (isset($_SESSION['firstname'])) {
                 echo " " . $_SESSION['firstname'];
             } ?>!</p>
