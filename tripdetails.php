@@ -541,7 +541,7 @@ if (isset($_GET["trip"])) {
                     $("#tripCosts").append('<b>Route Segment: ' + (i + 1).toString() + ', Passenger: ' + passengers[i].first_name + ' ' + passengers[i].last_name + ' <br>Email: ' + passengers[i].email + '</b><br>' + 'Time: ' + passengers[i].time + '<br>');
                     $("#tripCosts").append(route.legs[i].start_address + ' to <br>');
                     $("#tripCosts").append(route.legs[i].end_address + '<br>');
-                    $("#tripCosts").append('Distance : ' + Math.round(route.legs[i].distance.value / 1000) + ', Cost : ' + Math.round(route.legs[i].distance.value * 0.002) + '$<br><br>');
+                    $("#tripCosts").append('Distance : ' + Math.round(route.legs[i].distance.value / 1000) + 'km, Cost : ' + Math.round(route.legs[i].distance.value * 0.002) + '$<br><br>');
                 }
 
             } else {
@@ -549,6 +549,8 @@ if (isset($_GET["trip"])) {
             }
         });
     }
+
+    //TODO: Delete trip and all passengers
 </script>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=<? echo $mapsKEY ?>&callback=initMap">
