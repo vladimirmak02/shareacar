@@ -401,6 +401,12 @@ if (isset($_GET["trip"])) {
                                 href="/tripapply.php/?trip=<? echo $tripId; ?>"
                                 target="_blank"
                                 style="color: white">Apply to this trip</a></button>
+
+                    <button class="nav-right btn btn-danger <? if ($userIsDriver === 0) {
+                        echo "disappear";
+                    } ?>" type="button"
+                            id="deleteBtn" data-toggle="modal" data-target="#deleteConfirmModal">Delete this trip
+                    </button>
                 </div>
             </div>
             <table class="table table-borderless" style="width: 80%;">
@@ -487,6 +493,33 @@ if (isset($_GET["trip"])) {
 
         </div>
 
+    </div>
+</div>
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete this trip</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this trip?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 15em;">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-danger"><a
+                            href="/deletetrip.php/?trip=<? echo $tripId; ?>"
+                            target="_blank"
+                            style="color: white">Delete this trip
+                    </a></button>
+            </div>
+        </div>
     </div>
 </div>
 
