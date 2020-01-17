@@ -510,12 +510,11 @@ if (isset($_GET["trip"])) {
                 Are you sure you want to delete this trip?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 15em;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: auto">
                     Cancel
                 </button>
                 <button type="button" class="btn btn-danger"><a
                             href="/deletetrip.php/?trip=<? echo $tripId; ?>"
-                            target="_blank"
                             style="color: white">Delete this trip
                     </a></button>
             </div>

@@ -9,22 +9,6 @@ if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-if (isset($_POST['deleteCar'])) {
-    $sql = "DELETE FROM cars WHERE (carid = ?)";
-
-    if ($stmt = mysqli_prepare($link, $sql)) {
-        mysqli_stmt_bind_param($stmt, "s", $_POST["deleteCar"]);
-    } else {
-        echo "somehting went wrong1...";
-    }
-    if (mysqli_stmt_execute($stmt)) {
-        unlink($_POST["deleteCar"]) or die("Couldn't delete file");
-
-    } else {
-        echo "Something went wrong. Please try again later.";
-    }
-}
-
 $firstname = "";
 $lastname = "";
 $email = "";
@@ -167,13 +151,48 @@ if (mysqli_stmt_num_rows($stmt) > 0) {
                                 <td><? echo $passengerNumber; ?></td>
                             </tr>
                         </table>
-                        <form action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                            <input type='hidden' name='deleteCar' value="<? echo $carId; ?>"/>
-                            <button class="btn btn-danger" id="deleteBtn<? echo $i; ?>" type="submit">Delete
-                                your <? echo $carMake . " " . $carModel; ?></button>
-                        </form>
+                        <!--<form action="<? /* echo htmlspecialchars($_SERVER["PHP_SELF"]); */ ?>" method="post">
+                            <input type='hidden' name='deleteCar' value="<? /* echo $carId; */ ?>"/>
+                            <input type='hidden' name='deleteCarPath' value="<? /* echo $carImagePath; */ ?>"/>
+                            <button class="btn btn-danger" id="deleteBtn<? /* echo $i; */ ?>" type="submit">Delete
+                                your <? /* echo $carMake . " " . $carModel; */ ?></button>
+
+                        </form>-->
+                        <button class="btn btn-danger" style="width: 8em" type="button"
+                                id="deleteBtn" data-toggle="modal" data-target="#deleteConfirmModal">Delete this car
+                        </button>
                     </div>
                     <br>
+
+                    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog"
+                         aria-labelledby="exampleModalCenterTitle"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Delete this car</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this car? <br>
+                                    This will also delete all of your trips.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                            style="margin-right: auto;">
+                                        Cancel
+                                    </button>
+                                    <button type="button" class="btn btn-danger"><a
+                                                href="/deletecar.php/?car=<? echo $carId; ?>"
+                                                style="color: white">Delete
+                                        </a></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 <? } else {
                     echo "Fetch Failed";
                 }
@@ -182,6 +201,7 @@ if (mysqli_stmt_num_rows($stmt) > 0) {
         } ?>
     </div>
 </div>
+
 
 <? include("includes/footer.php"); ?>
 

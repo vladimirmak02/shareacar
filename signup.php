@@ -21,13 +21,6 @@ if (isset($_POST['submit'])) {
     $password = cleanInput($_POST["newPassword"]);
     $passwordRepeat = cleanInput($_POST["newPassword2"]);
 
-    echo $firstname . "-------";
-    echo $lastname . "-------";
-    echo $email . "-------";
-    echo $username . "-------";
-    echo $password . "-------";
-    echo $passwordRepeat . "-------";
-
 
     if ($email == false) {
         $emailError = 1;
