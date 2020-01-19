@@ -42,7 +42,7 @@ if (isset($_POST['submit'])) {
 
         $url = "localhost/newpw.php?selector=" . $selector . "&validator=" . bin2hex($token);
 
-        $expires = date("U") + 1800;
+        $expires = date("U") + 1800; //Adding time limit
 
         $sql = "DELETE FROM passwordreset WHERE email = ?";
 
@@ -63,7 +63,7 @@ if (isset($_POST['submit'])) {
         } else {
             echo "somehting went wrong1...";
         }
-
+        //Sending Email...
 
         $mail = new PHPMailer();
         $mail->isSMTP();

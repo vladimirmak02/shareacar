@@ -38,6 +38,7 @@ if (isset($_POST['submit'])) {
         if (mysqli_stmt_bind_result($stmt, $userid, $password_out, $firstname, $username)) {
             if (mysqli_stmt_fetch($stmt)) {
                 if (password_verify($password, $password_out)) {
+                    // User is logged in
                     session_start();
 
                     // Store data in session variables

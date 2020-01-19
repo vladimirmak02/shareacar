@@ -52,7 +52,7 @@ if (isset($_POST['submit'])) {
                     $tokenCheck = password_verify($tokenBin, $resettoken);
 
                     if ($tokenCheck) {
-
+                        //Update the password
                         $sql = "UPDATE users SET password= ? WHERE email = ?";
 
                         if ($stmt = mysqli_prepare($link, $sql)) {

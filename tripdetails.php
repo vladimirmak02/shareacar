@@ -4,7 +4,7 @@ session_start();
 require_once "includes/a_config.php";
 
 // Check if the user is logged in, if not then redirect him to login page
-if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== true) {
+if (!isset($_SESSION["loggedin"]) AND $_SESSION["loggedin"] !== TRUE) {
     header("location: /login.php");
     exit;
 }
@@ -37,11 +37,13 @@ if (isset($_GET["trip"])) {
         $carId = $starttime = $country = $startcity = $startstreet = $endcity = $endstreet = $monday = $tuesday = $wednesday = $thursday = $friday = $saturday = $sunday = $driverId = $carMake = $carModel = $carYear = $carColor = $carType = $passengerNumber = $carImagePath = $first_name = $last_name = $email = NULL;
         if (mysqli_stmt_bind_result($tripStmt, $carId, $starttime, $country, $startcity, $startstreet, $endcity, $endstreet, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday, $driverId, $carModel, $carYear, $carMake, $carColor, $carType, $passengerNumber, $carImagePath, $first_name, $last_name, $email)) {
             mysqli_stmt_fetch($tripStmt);
+            //Checking if driver
             if ($_SESSION["uid"] === $driverId) {
                 $userIsDriver = 1;
             }
 
         }
+
 
         $sql = "SELECT u.first_name, u.last_name, u.email, t.time, t.startcity, t.startstreet, t.endcity, t.endstreet FROM trippassengers AS t 
 INNER JOIN users AS u ON u.id = t.passenger
@@ -69,6 +71,8 @@ WHERE (t.trip = ?) AND (t.approved = 1) ORDER BY t.time";
             }
         }
 
+
+        //Checking if passenger
         if ($userIsDriver === 0) {
             $userIsPassenger = 0;
             $sql = "SELECT approved FROM trippassengers WHERE (trip = ?) AND (passenger = ?)";
@@ -97,7 +101,9 @@ WHERE (t.trip = ?) AND (t.approved = 1) ORDER BY t.time";
             }
         } elseif ($userIsDriver === 1) {
 
+            //Checking if approved or denied anything
             if (isset($_POST["status"])) {
+
                 $passengerId = $_POST["passenger"];
                 $passengerApproved = $_POST["status"];
 
@@ -115,7 +121,7 @@ WHERE (t.trip = ?) AND (t.approved = 1) ORDER BY t.time";
                 }
 
             }
-
+            //Selecting all pending passengers
             $sql = "SELECT passenger, time, startcity, startstreet, endcity, endstreet FROM trippassengers WHERE (trip = ?) AND (approved = 0)";
             $unapprovedPassengers = 0;
             if ($passengerStmt = mysqli_prepare($link, $sql)) {
@@ -464,9 +470,9 @@ if (isset($_GET["trip"])) {
                 <tr>
                     <th scope="row">Days</th>
                     <td>
-                                                        <span <? if ($monday === 0) {
-                                                            echo 'class="disappear"';
-                                                        } ?>>   monday,   </span>
+                        <span <? if ($monday === 0) {
+                            echo 'class="disappear"';
+                        } ?>>   monday,   </span>
                         <span <? if ($tuesday === 0) {
                             echo 'class="disappear"';
                         } ?>>   tuesday,   </span>
@@ -573,7 +579,7 @@ if (isset($_GET["trip"])) {
                     $("#tripCosts").append('<b>Route Segment: ' + (i + 1).toString() + ', Passenger: ' + passengers[i].first_name + ' ' + passengers[i].last_name + ' <br>Email: ' + passengers[i].email + '</b><br>' + 'Time: ' + passengers[i].time + '<br>');
                     $("#tripCosts").append(route.legs[i].start_address + ' to <br>');
                     $("#tripCosts").append(route.legs[i].end_address + '<br>');
-                    $("#tripCosts").append('Distance : ' + Math.round(route.legs[i].distance.value / 1000) + 'km, Cost : ' + Math.round(route.legs[i].distance.value * 0.002) + '$<br><br>');
+                    $("#tripCosts").append('Distance : ' + Math.round(route.legs[i].distance.value / 1000) + 'km, Cost : $' + Math.round(route.legs[i].distance.value * 0.002) + '<br><br>');
                 }
 
             } else {
@@ -582,7 +588,6 @@ if (isset($_GET["trip"])) {
         });
     }
 
-    //TODO: Delete trip and all passengers
 </script>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=<? echo $mapsKEY ?>&callback=initMap">
